@@ -34,8 +34,9 @@ class ScrapeTargetCommand extends Command
             return self::FAILURE;
         }
 
-        // Support comma-separated URLs
-        $urls = array_filter(array_map('trim', explode(',', $target)));
+        // Support comma, semicolon, or newline-separated URLs
+        $rawUrls = preg_split('/[\r\n,;]+/', $target, -1, PREG_SPLIT_NO_EMPTY);
+        $urls = array_filter(array_map('trim', $rawUrls));
 
         $totalExtracted = 0;
         foreach ($urls as $url) {

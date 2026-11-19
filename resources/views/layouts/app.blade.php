@@ -6,7 +6,43 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="referrer" content="no-referrer">
 
-    <title>@yield('title', 'Video Stream Portal')</title>
+    <title>@yield('title', 'HentaiFlex - Watch Free HD Anime & Hentai Streaming Online')</title>
+    <meta name="description" content="@yield('meta_description', 'Watch free HD anime and hentai videos streaming online on HentaiFlex. Ultra-fast direct playback, no buffering, mobile-friendly with thousands of full-length videos.')">
+    <meta name="keywords" content="@yield('meta_keywords', 'hentaiflex, hentai flex, watch hentai online, anime streaming, free hentai, uncensored hentai, 3d hentai, hd anime videos, fast stream')">
+    <link rel="canonical" href="@yield('canonical_url', url()->current())">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:site_name" content="HentaiFlex">
+    <meta property="og:type" content="@yield('og_type', 'website')">
+    <meta property="og:url" content="@yield('canonical_url', url()->current())">
+    <meta property="og:title" content="@yield('title', 'HentaiFlex - Watch Free HD Anime & Hentai Streaming Online')">
+    <meta property="og:description" content="@yield('meta_description', 'Watch free HD anime and hentai videos streaming online on HentaiFlex. Ultra-fast direct playback, no buffering.')">
+    <meta property="og:image" content="@yield('og_image', asset('images/og-cover.jpg'))">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="@yield('canonical_url', url()->current())">
+    <meta name="twitter:title" content="@yield('title', 'HentaiFlex - Watch Free HD Anime & Hentai Streaming Online')">
+    <meta name="twitter:description" content="@yield('meta_description', 'Watch free HD anime and hentai videos streaming online on HentaiFlex. Ultra-fast direct playback, no buffering.')">
+    <meta name="twitter:image" content="@yield('og_image', asset('images/og-cover.jpg'))">
+
+    <!-- Structured Data (JSON-LD) for Google Search -->
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "HentaiFlex",
+        "alternateName": ["Hentai Flex", "HentaiFlex HD"],
+        "url": "{{ url('/') }}",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "{{ url('/') }}?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
+    @stack('schema')
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -69,6 +105,14 @@
         }
     </style>
     @stack('styles')
+
+    <!-- ExoClick Site Verification -->
+    <meta name="6a97888e-site-verification" content="d2f41d24add6224e9e65403281a4372f">
+
+    <!-- Custom Ad Network Head Scripts (Verification / Header Tag) -->
+    @if(config('ads.enabled', true) && config('ads.head_script'))
+        {!! config('ads.head_script') !!}
+    @endif
 </head>
 <body class="min-h-screen flex flex-col bg-[#0b0f19]">
 
@@ -80,8 +124,8 @@
                     <i class="fa-solid fa-play text-white text-base ml-0.5"></i>
                 </div>
                 <div>
-                    <span class="text-xl font-black tracking-tight bg-gradient-to-r from-fuchsia-400 via-pink-400 to-indigo-400 bg-clip-text text-transparent">StreamFlix</span>
-                    <span class="text-[10px] text-slate-400 block -mt-1 tracking-wider uppercase font-semibold">Video Portal</span>
+                    <span class="text-xl font-black tracking-tight bg-gradient-to-r from-fuchsia-400 via-pink-400 to-indigo-400 bg-clip-text text-transparent">HentaiFlex</span>
+                    <span class="text-[10px] text-slate-400 block -mt-1 tracking-wider uppercase font-semibold">Ultra HD Streaming</span>
                 </div>
             </a>
 
@@ -93,6 +137,9 @@
             </div>
         </div>
     </header>
+
+    <!-- Header Banner Ad Slot (728x90 / 320x50) -->
+    @include('partials.ads.slot', ['slot' => 'header', 'class' => 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4'])
 
     <!-- Alerts / Flash Messages -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full mt-4">
@@ -134,16 +181,32 @@
     </main>
 
     <!-- Footer -->
-    <footer class="border-t border-slate-800/80 bg-[#070b13] py-8 mt-16 text-center text-xs text-slate-500">
+    <footer class="border-t border-slate-800/80 bg-[#070b13] py-10 mt-16 text-center text-xs text-slate-500">
         <div class="max-w-7xl mx-auto px-4">
-            <p class="text-slate-400 font-medium">StreamFlix &copy; {{ date('Y') }} &bull; Native Video Streaming</p>
-            <p class="mt-1 text-slate-600">Stream videos smoothly with native controls and instant playback.</p>
+            <div class="flex items-center justify-center gap-2 mb-2">
+                <div class="w-6 h-6 rounded-lg bg-gradient-to-tr from-fuchsia-600 to-indigo-600 flex items-center justify-center text-white text-[10px]">
+                    <i class="fa-solid fa-play"></i>
+                </div>
+                <span class="font-extrabold text-sm text-white tracking-wide">HentaiFlex</span>
+            </div>
+            <p class="text-slate-400 font-medium">HentaiFlex &copy; {{ date('Y') }} &bull; Watch Free HD Anime & Hentai Streaming Online</p>
+            <p class="mt-1 text-slate-500 max-w-xl mx-auto leading-relaxed">
+                Stream thousands of full-length videos in high definition with ultra-fast direct MP4 playback, instant seeking, and zero buffering.
+            </p>
         </div>
     </footer>
+
+    <!-- Sticky Bottom Banner Ad -->
+    @include('partials.ads.sticky-footer')
 
     <!-- Scripts -->
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     @stack('scripts')
+
+    <!-- Popunder / On-Click Ad Script -->
+    @if(config('ads.enabled', true) && config('ads.popunder.enabled', true) && config('ads.popunder.code'))
+        {!! config('ads.popunder.code') !!}
+    @endif
 </body>
 </html>

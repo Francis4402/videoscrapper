@@ -16,8 +16,17 @@ class VideoScraperWebTest extends TestCase
         $response = $this->get('/');
 
         $response->assertStatus(200);
-        $response->assertSee('StreamFlix');
-        $response->assertSee('Watch HD Videos');
+        $response->assertSee('HentaiFlex');
+        $response->assertSee('Watch Free HD Videos');
+    }
+
+    public function test_sitemap_xml_returns_valid_google_video_sitemap(): void
+    {
+        $response = $this->get('/sitemap.xml');
+
+        $response->assertStatus(200);
+        $response->assertHeader('Content-Type', 'text/xml; charset=UTF-8');
+        $response->assertSee('xmlns:video="http://www.google.com/schemas/sitemap-video/1.1"', false);
     }
 
     public function test_auto_syncs_when_link_is_configured_in_env(): void
@@ -29,6 +38,21 @@ class VideoScraperWebTest extends TestCase
         $response->assertStatus(200);
         $this->assertDatabaseHas('scraped_videos', [
             'source_domain' => 'commondatastorage.googleapis.com',
+        ]);
+    }
+
+    public function test_auto_syncs_multiple_links_configured_in_env(): void
+    {
+        Config::set('scraper.target_url', "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4, https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4");
+
+        $response = $this->get('/');
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('scraped_videos', [
+            'title' => 'BigBuckBunny',
+        ]);
+        $this->assertDatabaseHas('scraped_videos', [
+            'title' => 'ElephantsDream',
         ]);
     }
 
@@ -101,10 +125,9 @@ class VideoScraperWebTest extends TestCase
         $response->assertSee('Special Busty Anime Clip');
         $response->assertDontSee('Hilarious Meme Laughing Joke');
 
-        // Filter by 'clips' category
-        $responseClips = $this->get('/?category=clips');
-        $responseClips->assertStatus(200);
-        $responseClips->assertSee('Hilarious Meme Laughing Joke');
-        $responseClips->assertDontSee('Special Busty Anime Clip');
+        // Funny videos and clips/memes category are removed
+        $this->assertArrayNotHasKey('clips', ScrapedVideo::$categoryDefinitions);
+        $responseHome = $this->get('/');
+        $responseHome->assertDontSee('Hilarious Meme Laughing Joke');
     }
 }

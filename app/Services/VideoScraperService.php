@@ -267,6 +267,21 @@ class VideoScraperService
         $models = [];
         foreach ($foundVideos as $item) {
             $cleanTitle = Str::limit(trim($item['title'] ?? 'Scraped Video'), 200);
+
+            // Filter out funny videos and meme clips
+            $testTitle = strtolower($cleanTitle);
+            $testDomain = strtolower($item['source_domain'] ?? $domain);
+            if (
+                str_contains($testTitle, 'funny') ||
+                str_contains($testTitle, 'meme') ||
+                str_contains($testTitle, 'laugh') ||
+                str_contains($testTitle, 'joke') ||
+                str_contains($testTitle, 'lol montage') ||
+                str_contains($testDomain, 'vlipsy')
+            ) {
+                continue;
+            }
+
             $cleanThumb = $item['thumbnail_url'] ?? null;
             if ($cleanThumb && !$this->isValidThumbnail($cleanThumb)) {
                 $cleanThumb = null;
@@ -282,13 +297,21 @@ class VideoScraperService
                 $lookup['source_url'] = $item['source_url'];
             }
 
+            $desc = $item['description'] ?? $pageDescription;
+            if ($desc && (
+                str_contains($desc, 'Hentai City has free HD') ||
+                str_contains($desc, 'Watch hentai online and free download')
+            )) {
+                $desc = null;
+            }
+
             $model = ScrapedVideo::updateOrCreate(
                 $lookup,
                 [
                     'source_url' => $item['source_url'],
                     'source_domain' => $item['source_domain'] ?? $domain,
                     'title' => $cleanTitle ?: 'Scraped Video',
-                    'description' => $item['description'] ?? $pageDescription,
+                    'description' => $desc,
                     'thumbnail_url' => $cleanThumb,
                     'video_type' => $item['video_type'] ?? 'direct',
                     'duration' => $item['duration'] ?? null,
@@ -324,33 +347,61 @@ class VideoScraperService
     }
 
     /**
-     * Platform-specific extractor (e.g. Vlipsy clip cards, search listings)
+     * Platform-specific extractor (e.g. watchhentai.net episode cards)
      */
     protected function extractPlatformClips(Crawler $crawler, string $html, string $url, string $domain): array
     {
         $clips = [];
 
-        // Vlipsy.com clip listing detection
-        if (str_contains($domain, 'vlipsy.com')) {
-            $crawler->filter('img')->each(function (Crawler $node) use ($url, $domain, &$clips) {
-                $src = $node->attr('src') ?: $node->attr('data-src');
-                if ($src && preg_match('#clips/([a-zA-Z0-9]+)/preview#', $src, $matches)) {
-                    $clipId = $matches[1];
-                    $title = trim($node->attr('alt') ?: 'Funny Clip');
+        // watchhentai.net episode listing detection
+        if (str_contains($domain, 'watchhentai.net')) {
+            $crawler->filter('.poster, .item, article')->each(function (Crawler $node) use ($url, $domain, &$clips) {
+                $linkNode = $node->filter('a.ep-bd-link, a[href*="/videos/"]');
+                if (!$linkNode->count()) return;
 
-                    if (!isset($clips[$clipId])) {
-                        $clips[$clipId] = [
-                            'source_url' => $url,
-                            'source_domain' => $domain,
-                            'title' => $title,
-                            'description' => null,
-                            'thumbnail_url' => "https://cdn.vlipsy.com/clips/{$clipId}/preview-small.jpg",
-                            'video_url' => null,
-                            'embed_url' => "https://vlipsy.com/embed/{$clipId}",
-                            'video_type' => 'embed',
-                            'duration' => null,
-                        ];
+                $href = $linkNode->first()->attr('href');
+                if (!$href || !str_contains($href, '/videos/')) return;
+
+                if (isset($clips[$href])) return;
+
+                $title = trim($linkNode->first()->attr('title') ?: '');
+                if (!$title) {
+                    $serie = $node->filter('.serie');
+                    $ep = $node->filter('h3');
+                    if ($serie->count() && $ep->count()) {
+                        $title = trim($serie->text() . ' – ' . $ep->text());
+                    } elseif ($node->filter('h2, h3, strong')->count()) {
+                        $title = trim($node->filter('h2, h3, strong')->first()->text());
                     }
+                }
+
+                $img = '';
+                $imgNode = $node->filter('img');
+                if ($imgNode->count()) {
+                    $img = $imgNode->first()->attr('data-src') ?: ($imgNode->first()->attr('src') ?: '');
+                }
+                if (empty($img) || str_contains($img, 'data:image')) {
+                    $bd = $node->attr('data-backdrops');
+                    if ($bd) {
+                        $decoded = json_decode($bd, true);
+                        if (!empty($decoded[0])) {
+                            $img = $decoded[0];
+                        }
+                    }
+                }
+
+                if ($title && $href) {
+                    $clips[$href] = [
+                        'source_url' => $url,
+                        'source_domain' => $domain,
+                        'title' => $title,
+                        'description' => null,
+                        'thumbnail_url' => $img ?: null,
+                        'video_url' => null,
+                        'embed_url' => $href,
+                        'video_type' => 'embed',
+                        'duration' => null,
+                    ];
                 }
             });
         }

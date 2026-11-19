@@ -94,7 +94,7 @@ class ScrapedVideo extends Model
             'slug' => '3d',
             'name' => '3D',
             'icon' => 'fa-solid fa-cube',
-            'keywords' => ['3d', 'cgi'],
+            'keywords' => ['3d', 'cgi', 'sfm', 'blender', '3-d'],
         ],
         'busty' => [
             'slug' => 'busty',
@@ -156,13 +156,22 @@ class ScrapedVideo extends Model
             'icon' => 'fa-solid fa-tv',
             'keywords' => ['hentai', 'anime', 'ecchi', 'doujinshi'],
         ],
-        'clips' => [
-            'slug' => 'clips',
-            'name' => 'Clips & Memes',
-            'icon' => 'fa-solid fa-face-laugh-squint',
-            'keywords' => ['funny', 'laugh', 'meme', 'joke'],
-        ],
     ];
+
+    /**
+     * Scope query to exclude funny videos, memes, and vlipsy clips
+     */
+    public function scopeNotFunny($query)
+    {
+        return $query->where(function ($q) {
+            $q->whereNull('source_domain')->orWhere('source_domain', 'not like', '%vlipsy%');
+        })->where(function ($q) {
+            $q->where('title', 'not like', '%funny%')
+              ->where('title', 'not like', '%meme%')
+              ->where('title', 'not like', '%laughing%')
+              ->where('title', 'not like', '%lol montage%');
+        });
+    }
 
     /**
      * Get matching categories for this video
@@ -170,11 +179,17 @@ class ScrapedVideo extends Model
     public function getCategoriesAttribute(): array
     {
         $cats = [];
-        $text = strtolower($this->title . ' ' . ($this->description ?? ''));
+        $titleLower = strtolower($this->title);
+        $sourceLower = strtolower($this->source_url ?? '');
 
         foreach (self::$categoryDefinitions as $slug => $def) {
+            if ($slug === '3d' && (str_contains($sourceLower, '3d') || str_contains($sourceLower, 'cgi'))) {
+                $cats[] = $def;
+                continue;
+            }
+
             foreach ($def['keywords'] as $kw) {
-                if (str_contains($text, $kw)) {
+                if (str_contains($titleLower, $kw)) {
                     $cats[] = $def;
                     break;
                 }

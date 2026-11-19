@@ -1,2 +1,6 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /stream-proxy/
+Disallow: /image-proxy/
+
+Sitemap: https://hentaiflex.com/sitemap.xml

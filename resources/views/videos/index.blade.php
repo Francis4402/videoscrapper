@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'StreamFlix - Watch HD Videos')
+@section('title', 'HentaiFlex - Watch Free HD Anime & Hentai Streaming Online')
+@section('meta_description', 'Stream free HD anime and hentai videos with instant direct playback, zero lag, and no buffering on HentaiFlex. Browse uncensored, 3D, and trending series.')
 
 @section('content')
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -11,10 +12,10 @@
 
         <div class="relative z-10 max-w-2xl mx-auto text-center">
             <h1 class="text-3xl sm:text-5xl font-black tracking-tight text-white mb-3">
-                Watch HD Videos
+                Watch Free HD Videos & Anime
             </h1>
             <p class="text-slate-400 text-sm sm:text-base mb-6">
-                Stream movies, trailers, and clips instantly with full playback controls.
+                Stream uncensored, 3D, and popular series with ultra-fast direct playback and zero buffering.
             </p>
 
             <!-- Search Form -->
@@ -215,6 +216,11 @@
 
                     </div>
                 </div>
+
+                {{-- In-Feed Native Ad Card --}}
+                @if($loop->iteration === 4 || ($loop->iteration > 4 && $loop->iteration % 8 === 0))
+                    @include('partials.ads.grid-feed')
+                @endif
             @endforeach
         </div>
 

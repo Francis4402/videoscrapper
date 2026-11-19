@@ -1,6 +1,30 @@
 @extends('layouts.app')
 
-@section('title', $video->title . ' - Watch Video')
+@section('title', $video->title . ' - Watch Full HD Online | HentaiFlex')
+@section('meta_description', Str::limit(strip_tags($video->description ?: 'Watch ' . $video->title . ' in full HD streaming on HentaiFlex. Ultra-fast direct playback, high resolution, no buffering.'), 160))
+@section('og_type', 'video.other')
+@section('og_image', $video->thumbnail_url ?: '')
+@section('canonical_url', route('videos.watch', $video->slug ?: $video->id))
+
+@push('schema')
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@type": "VideoObject",
+    "name": "{{ addslashes($video->title) }}",
+    "description": "{{ addslashes($video->description ?: 'Watch ' . $video->title . ' in full HD streaming on HentaiFlex.') }}",
+    "thumbnailUrl": [
+        "{{ $video->thumbnail_url ?: url('/images/placeholder.jpg') }}"
+    ],
+    "uploadDate": "{{ $video->created_at->toIso8601String() }}",
+    @if($video->duration)
+    "duration": "{{ 'PT' . str_replace(':', 'M', $video->duration) . 'S' }}",
+    @endif
+    "contentUrl": "{{ route('stream.proxy', $video->id) }}",
+    "embedUrl": "{{ route('videos.watch', $video->slug ?: $video->id) }}"
+}
+</script>
+@endpush
 
 @section('content')
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -128,6 +152,9 @@
         </div>
     </div>
 
+    <!-- Below Player Ad Slot (728x90 / 300x250) -->
+    @include('partials.ads.slot', ['slot' => 'watch_below_player', 'class' => 'mt-6'])
+
     <!-- Video Details & Related Grid -->
     <div class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
         
@@ -159,6 +186,9 @@
 
         <!-- Right: Related Videos -->
         <div class="space-y-4">
+            <!-- Sidebar Ad Slot (300x250) -->
+            @include('partials.ads.slot', ['slot' => 'watch_sidebar'])
+
             <h3 class="text-base font-bold text-white flex items-center gap-2">
                 <i class="fa-solid fa-fire text-fuchsia-400"></i> More Videos
             </h3>

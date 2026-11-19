@@ -6,6 +6,7 @@ use App\Http\Controllers\VideoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [VideoController::class, 'index'])->name('home');
+Route::get('/sitemap.xml', [VideoController::class, 'sitemap'])->name('sitemap');
 Route::post('/scrape', [VideoController::class, 'scrape'])->name('videos.scrape');
 Route::post('/scrape-configured', [VideoController::class, 'scrapeConfigured'])->name('videos.scrapeConfigured');
 Route::get('/watch/{slug}', [VideoController::class, 'watch'])->name('videos.watch');

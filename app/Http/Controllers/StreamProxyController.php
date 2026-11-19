@@ -23,7 +23,9 @@ class StreamProxyController extends Controller
         $targetUrl = $video->video_url;
         $referer = str_contains($video->source_domain ?? '', 'hentaicity.com')
             ? 'https://www.hentaicity.com/'
-            : ($video->source_url ?: $targetUrl);
+            : (str_contains($video->source_domain ?? '', 'watchhentai.net') || str_contains($targetUrl, 'hstorage.xyz')
+                ? 'https://watchhentai.net/'
+                : ($video->source_url ?: $targetUrl));
 
         $client = new Client([
             'verify' => false,
