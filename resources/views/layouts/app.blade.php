@@ -104,6 +104,19 @@
                 box-shadow: 0 0 0 0 rgba(217, 70, 239, 0);
             }
         }
+        /* Mobile-Responsive Ad Enforcements */
+        .ad-content, .ad-slot, .ad-placeholder {
+            max-width: 100% !important;
+        }
+        .ad-content ins,
+        .ad-content iframe,
+        .ad-slot ins,
+        .ad-slot iframe {
+            max-width: 100% !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+            display: block !important;
+        }
     </style>
     @stack('styles')
 
