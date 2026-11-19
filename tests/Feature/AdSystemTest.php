@@ -67,7 +67,9 @@ class AdSystemTest extends TestCase
             'ads.enabled' => true,
             'ads.show_placeholders' => true,
             'ads.slots.watch_below_player.enabled' => true,
+            'ads.slots.watch_below_player.code' => null,
             'ads.slots.watch_sidebar.enabled' => true,
+            'ads.slots.watch_sidebar.code' => null,
         ]);
 
         $response = $this->get(route('videos.watch', $video->id));
