@@ -75,4 +75,18 @@ class AdSystemTest extends TestCase
         $response->assertSee('ad-placeholder-watch_below_player');
         $response->assertSee('ad-placeholder-watch_sidebar');
     }
+
+    public function test_onclick_engine_renders_script_when_enabled(): void
+    {
+        config([
+            'ads.enabled' => true,
+            'ads.onclick.enabled' => true,
+            'ads.onclick.url' => 'https://custom-ad-landing.com',
+        ]);
+
+        $response = $this->get('/');
+        $response->assertStatus(200);
+        $response->assertSee('triggerOnClickAd');
+        $response->assertSee('https://custom-ad-landing.com');
+    }
 }

@@ -297,6 +297,11 @@
 
     // Start playback when centered cover or play button is clicked
     function startPlayback() {
+        // Trigger On-Click Popunder Ad on Play
+        if (typeof window.triggerOnClickAd === 'function') {
+            window.triggerOnClickAd('video_play');
+        }
+
         const cover = document.getElementById('player-cover');
         const video = document.getElementById('video-player');
 

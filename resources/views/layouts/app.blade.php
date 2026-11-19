@@ -218,6 +218,47 @@
             }
         });
     </script>
+
+    <!-- OnClick Popunder Monetization Engine -->
+    @if(config('ads.enabled', true) && config('ads.onclick.enabled', true))
+    <script>
+        (function() {
+            const adUrl = "{{ config('ads.onclick.url', 'https://syndication.exoclick.com/splash.php?idzone=default') }}";
+            const freqMinutes = {{ (int) config('ads.onclick.frequency_minutes', 3) }};
+
+            window.triggerOnClickAd = function(source) {
+                if (!adUrl) return;
+                const lastTime = localStorage.getItem('hentaiflex_last_ad_pop');
+                const now = Date.now();
+                if (lastTime && (now - parseInt(lastTime, 10)) < (freqMinutes * 60 * 1000)) {
+                    return;
+                }
+
+                try {
+                    const win = window.open(adUrl, '_blank');
+                    if (win) {
+                        localStorage.setItem('hentaiflex_last_ad_pop', now.toString());
+                    }
+                } catch (e) {
+                    // Suppressed by browser pop blocker
+                }
+            };
+
+            @if(config('ads.onclick.trigger_on_first_click', true))
+            let pageClicked = false;
+            document.addEventListener('click', function(e) {
+                if (pageClicked) return;
+                if (e.target.closest('a[target="_blank"]') || e.target.closest('#sticky-footer-ad') || e.target.closest('button[onclick*="dismiss"]')) {
+                    return;
+                }
+                pageClicked = true;
+                window.triggerOnClickAd('page_click');
+            }, { capture: true, once: true });
+            @endif
+        })();
+    </script>
+    @endif
+
     @stack('scripts')
 
     <!-- Popunder / On-Click Ad Script -->

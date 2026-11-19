@@ -4,6 +4,7 @@
         $isEnabled = $slotConfig['enabled'] ?? true;
         $code = trim($slotConfig['code'] ?? '');
         $showPlaceholder = config('ads.show_placeholders', true);
+        $adUrl = $slotConfig['url'] ?? config('ads.onclick.url', 'https://syndication.exoclick.com/splash.php?idzone=default');
     @endphp
 
     @if($isEnabled)
@@ -15,24 +16,44 @@
                 </div>
             </div>
         @elseif($showPlaceholder)
-            <div class="rounded-2xl bg-gradient-to-br from-slate-900 via-fuchsia-950/20 to-slate-900 border border-dashed border-fuchsia-500/40 p-5 flex flex-col justify-between select-none min-h-[240px] text-center">
-                <div class="flex items-center justify-between">
-                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-fuchsia-950/80 text-fuchsia-400 border border-fuchsia-500/30">
-                        <i class="fa-solid fa-rectangle-ad"></i> Sponsored
-                    </span>
-                    <span class="text-[10px] text-slate-500 font-mono">In-Feed</span>
-                </div>
-                
-                <div class="py-4">
-                    <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-fuchsia-600/30 to-indigo-600/30 border border-fuchsia-500/30 flex items-center justify-center mx-auto mb-2 text-fuchsia-400">
-                        <i class="fa-solid fa-bullhorn text-lg"></i>
-                    </div>
-                    <h4 class="text-xs font-bold text-slate-200">Native In-Grid Ad</h4>
-                    <p class="text-[11px] text-slate-400 mt-1">Blends directly between video cards for high CTR.</p>
-                </div>
+            <!-- High-Converting In-Feed Sponsored Video Card -->
+            <div class="group relative rounded-2xl bg-gradient-to-br from-slate-900 via-purple-950/40 to-slate-900 border border-fuchsia-500/40 overflow-hidden card-glow transition duration-300 flex flex-col justify-between shadow-xl">
+                <!-- Thumbnail Area -->
+                <a href="{{ $adUrl }}" target="_blank" rel="nofollow noopener noreferrer" class="block relative aspect-video w-full overflow-hidden bg-slate-950">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-fuchsia-950/80 via-purple-900/40 to-indigo-950/80 flex flex-col items-center justify-center p-4 text-center">
+                        <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wider bg-fuchsia-600 text-white shadow">
+                            <i class="fa-solid fa-fire mr-1 text-amber-300"></i> Sponsored
+                        </span>
+                        <span class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-black/80 text-amber-400 border border-amber-400/40">
+                            18+ Free
+                        </span>
 
-                <div class="text-[10px] text-slate-400 bg-slate-950/60 p-2 rounded-lg border border-slate-800">
-                    Set <code class="text-fuchsia-300 font-mono">ADS_GRID_FEED_CODE</code> in .env
+                        <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-fuchsia-600 to-indigo-600 text-white flex items-center justify-center shadow-2xl shadow-fuchsia-600/50 mb-2 group-hover:scale-110 group-hover:rotate-6 transition-transform">
+                            <i class="fa-solid fa-gamepad text-xl"></i>
+                        </div>
+                        <span class="text-xs font-black text-white uppercase tracking-wider">Play Free Hentai Game</span>
+                        <span class="text-[10px] text-slate-300">No Download &bull; Full HD</span>
+                    </div>
+                </a>
+
+                <!-- Card Body -->
+                <div class="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-fuchsia-400">Featured Partner</span>
+                            <span class="text-[10px] text-amber-400"><i class="fa-solid fa-star"></i> 4.9/5</span>
+                        </div>
+                        <h4 class="text-xs font-black text-white group-hover:text-fuchsia-300 transition line-clamp-1">
+                            3D Uncensored Hentai RPG
+                        </h4>
+                        <p class="text-[11px] text-slate-400 mt-1 line-clamp-2 leading-relaxed">
+                            Play interactive full-length anime RPG in your browser with uncensored animations.
+                        </p>
+                    </div>
+
+                    <a href="{{ $adUrl }}" target="_blank" rel="nofollow noopener noreferrer" class="mt-4 block w-full py-2.5 rounded-xl text-center text-xs font-extrabold uppercase tracking-wider bg-gradient-to-r from-fuchsia-600 to-indigo-600 group-hover:from-fuchsia-500 group-hover:to-indigo-500 text-white shadow-lg shadow-fuchsia-600/30 transition">
+                        Play Game Now <i class="fa-solid fa-arrow-up-right-from-square text-[10px] ml-1"></i>
+                    </a>
                 </div>
             </div>
         @endif
