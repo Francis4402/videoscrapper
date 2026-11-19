@@ -2,9 +2,12 @@
 # Legitimate search engines are welcomed to index videos for high SEO rankings.
 
 User-agent: Googlebot
+User-agent: Googlebot-Video
+User-agent: Googlebot-Image
+User-agent: Google-InspectionTool
+User-agent: Mediapartners-Google
 Allow: /
-Disallow: /stream-proxy/
-Disallow: /image-proxy/
+Allow: /stream-proxy/
 Disallow: /scrape
 Disallow: /scrape-configured
 Disallow: /clear-all

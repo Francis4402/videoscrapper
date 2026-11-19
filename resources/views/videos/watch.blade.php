@@ -8,21 +8,32 @@
 @section('canonical_url', route('videos.watch', $video->slug ?: $video->id))
 
 @push('schema')
+@php
+    $parts = array_map('intval', explode(':', $video->duration ?? ''));
+    $totalSeconds = count($parts) === 3 ? ($parts[0] * 3600 + $parts[1] * 60 + $parts[2]) : (count($parts) === 2 ? ($parts[0] * 60 + $parts[1]) : ($parts[0] ?? null));
+    $thumb = $video->thumbnail_url;
+    if ($thumb && Str::startsWith($thumb, '//')) {
+        $thumb = 'https:' . $thumb;
+    } elseif ($thumb && !Str::startsWith($thumb, 'http')) {
+        $thumb = url($thumb);
+    }
+    $thumb = $thumb ?: url('/favicon.ico');
+@endphp
 <script type="application/ld+json">
 {
     "@@context": "https://schema.org",
     "@type": "VideoObject",
-    "name": "{{ addslashes($video->title) }}",
-    "description": "{{ addslashes($video->description ?: 'Watch ' . $video->title . ' in full HD streaming on HentaiFlex.') }}",
+    "name": {!! json_encode($video->title) !!},
+    "description": {!! json_encode(strip_tags($video->description ?: 'Watch ' . $video->title . ' full episode in HD on HentaiFlex.')) !!},
     "keywords": "hentai, hentaiflex, gangbang hentai, cartoon hentai, 3d hentai, uncensored anime",
     "genre": ["Hentai", "Anime", "Animation"],
     "isFamilyFriendly": "false",
     "thumbnailUrl": [
-        "{{ $video->thumbnail_url ?: url('/images/placeholder.jpg') }}"
+        {!! json_encode($thumb) !!}
     ],
     "uploadDate": "{{ $video->created_at->toIso8601String() }}",
-    @if($video->duration)
-    "duration": "{{ 'PT' . str_replace(':', 'M', $video->duration) . 'S' }}",
+    @if($totalSeconds)
+    "duration": "PT{{ $totalSeconds }}S",
     @endif
     "contentUrl": "{{ route('stream.proxy', $video->id) }}",
     "embedUrl": "{{ route('videos.watch', $video->slug ?: $video->id) }}"

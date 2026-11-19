@@ -25,7 +25,16 @@
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
         <video:video>
-            <video:thumbnail_loc>{{ $video->thumbnail_url ?: url('/favicon.ico') }}</video:thumbnail_loc>
+            @php
+                $thumb = $video->thumbnail_url;
+                if ($thumb && Str::startsWith($thumb, '//')) {
+                    $thumb = 'https:' . $thumb;
+                } elseif ($thumb && !Str::startsWith($thumb, 'http')) {
+                    $thumb = url($thumb);
+                }
+                $thumb = $thumb ?: url('/favicon.ico');
+            @endphp
+            <video:thumbnail_loc>{{ $thumb }}</video:thumbnail_loc>
             <video:title><![CDATA[{{ $video->title }}]]></video:title>
             <video:description><![CDATA[{{ Str::limit(strip_tags($video->description ?: 'Watch ' . $video->title . ' in full HD streaming on HentaiFlex.'), 200) }}]]></video:description>
             @if($video->video_url)

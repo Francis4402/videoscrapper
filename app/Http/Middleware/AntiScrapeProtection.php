@@ -39,6 +39,8 @@ class AntiScrapeProtection
      */
     protected array $allowedAgents = [
         'googlebot',
+        'google-inspectiontool',
+        'google',
         'bingbot',
         'duckduckbot',
         'yandexbot',

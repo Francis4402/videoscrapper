@@ -4,7 +4,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="referrer" content="no-referrer">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <!-- Google Search Console Verification -->
+    @if(env('GOOGLE_SITE_VERIFICATION'))
+    <meta name="google-site-verification" content="{{ env('GOOGLE_SITE_VERIFICATION') }}">
+    @endif
 
     <title>@yield('title', 'HentaiFlex - Watch Free HD Hentai, Gangbang Hentai, Cartoon Hentai & 3D Anime Streaming Online')</title>
     <meta name="description" content="@yield('meta_description', 'Watch free HD hentai, gangbang hentai, cartoon hentai, 3D uncensored anime videos online on HentaiFlex. Ultra-fast direct playback, high resolution, no buffering, mobile-friendly full-length episodes.')">
