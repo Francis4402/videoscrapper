@@ -32,8 +32,30 @@
             <video:content_loc>{{ route('stream.proxy', $video->id) }}</video:content_loc>
             @endif
             <video:player_loc allow_embed="yes">{{ route('videos.watch', $video->slug ?: $video->id) }}</video:player_loc>
+            @if($video->duration)
+            @php
+                $parts = array_map('intval', explode(':', $video->duration));
+                $sec = count($parts) === 3 ? ($parts[0] * 3600 + $parts[1] * 60 + $parts[2]) : (count($parts) === 2 ? ($parts[0] * 60 + $parts[1]) : ($parts[0] ?? 600));
+            @endphp
+            <video:duration>{{ $sec }}</video:duration>
+            @endif
             <video:publication_date>{{ $video->created_at->toAtomString() }}</video:publication_date>
             <video:family_friendly>no</video:family_friendly>
+            <video:tag>hentai</video:tag>
+            <video:tag>hentaiflex</video:tag>
+            <video:tag>watch hentai</video:tag>
+            <video:tag>free hentai</video:tag>
+            <video:tag>hentai videos</video:tag>
+            <video:tag>hentai streaming</video:tag>
+            <video:tag>gangbang hentai</video:tag>
+            <video:tag>cartoon hentai</video:tag>
+            <video:tag>3d hentai</video:tag>
+            <video:tag>uncensored hentai</video:tag>
+            <video:tag>english sub hentai</video:tag>
+            <video:tag>anime</video:tag>
+            <video:category>Anime &amp; Hentai</video:category>
+            <video:view_count>12500</video:view_count>
+            <video:rating>4.9</video:rating>
         </video:video>
     </url>
     @endforeach

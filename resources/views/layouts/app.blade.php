@@ -6,9 +6,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="referrer" content="no-referrer">
 
-    <title>@yield('title', 'HentaiFlex - Watch Free HD Anime & Hentai Streaming Online')</title>
-    <meta name="description" content="@yield('meta_description', 'Watch free HD anime and hentai videos streaming online on HentaiFlex. Ultra-fast direct playback, no buffering, mobile-friendly with thousands of full-length videos.')">
-    <meta name="keywords" content="@yield('meta_keywords', 'hentaiflex, hentai flex, watch hentai online, anime streaming, free hentai, uncensored hentai, 3d hentai, hd anime videos, fast stream')">
+    <title>@yield('title', 'HentaiFlex - Watch Free HD Hentai, Gangbang Hentai, Cartoon Hentai & 3D Anime Streaming Online')</title>
+    <meta name="description" content="@yield('meta_description', 'Watch free HD hentai, gangbang hentai, cartoon hentai, 3D uncensored anime videos online on HentaiFlex. Ultra-fast direct playback, high resolution, no buffering, mobile-friendly full-length episodes.')">
+    <meta name="keywords" content="@yield('meta_keywords', 'hentai, gangbang hentai, cartoon hentai, hentaiflex, hentai flex, watch hentai online, 3d hentai, uncensored hentai, anime hentai, free hentai, best hentai streaming, hd anime videos, english sub hentai, full hentai episodes, doujinshi anime, group hentai, harem hentai, animated hentai')">
     <link rel="canonical" href="@yield('canonical_url', url()->current())">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 
@@ -16,15 +16,15 @@
     <meta property="og:site_name" content="HentaiFlex">
     <meta property="og:type" content="@yield('og_type', 'website')">
     <meta property="og:url" content="@yield('canonical_url', url()->current())">
-    <meta property="og:title" content="@yield('title', 'HentaiFlex - Watch Free HD Anime & Hentai Streaming Online')">
-    <meta property="og:description" content="@yield('meta_description', 'Watch free HD anime and hentai videos streaming online on HentaiFlex. Ultra-fast direct playback, no buffering.')">
+    <meta property="og:title" content="@yield('title', 'HentaiFlex - Watch Free HD Hentai, Gangbang Hentai & Cartoon Hentai Streaming')">
+    <meta property="og:description" content="@yield('meta_description', 'Watch free HD hentai, gangbang hentai, cartoon hentai and 3D uncensored anime videos on HentaiFlex. Fast direct playback, no buffering.')">
     <meta property="og:image" content="@yield('og_image', asset('images/og-cover.jpg'))">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="@yield('canonical_url', url()->current())">
-    <meta name="twitter:title" content="@yield('title', 'HentaiFlex - Watch Free HD Anime & Hentai Streaming Online')">
-    <meta name="twitter:description" content="@yield('meta_description', 'Watch free HD anime and hentai videos streaming online on HentaiFlex. Ultra-fast direct playback, no buffering.')">
+    <meta name="twitter:title" content="@yield('title', 'HentaiFlex - Watch Free HD Hentai, Gangbang Hentai & Cartoon Hentai Streaming')">
+    <meta name="twitter:description" content="@yield('meta_description', 'Watch free HD hentai, gangbang hentai, cartoon hentai and 3D uncensored anime videos on HentaiFlex. Fast direct playback, no buffering.')">
     <meta name="twitter:image" content="@yield('og_image', asset('images/og-cover.jpg'))">
 
     <!-- Structured Data (JSON-LD) for Google Search -->
@@ -33,8 +33,9 @@
         "@@context": "https://schema.org",
         "@type": "WebSite",
         "name": "HentaiFlex",
-        "alternateName": ["Hentai Flex", "HentaiFlex HD"],
+        "alternateName": ["Hentai Flex", "HentaiFlex HD", "HentaiFlex Gangbang & Cartoon Hentai"],
         "url": "{{ url('/') }}",
+        "description": "Watch free HD hentai, gangbang hentai, cartoon hentai, and 3D anime videos streaming online.",
         "potentialAction": {
             "@type": "SearchAction",
             "target": "{{ url('/') }}?q={search_term_string}",

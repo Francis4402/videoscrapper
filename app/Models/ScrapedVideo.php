@@ -90,11 +90,35 @@ class ScrapedVideo extends Model
     }
 
     public static array $categoryDefinitions = [
+        'gangbang' => [
+            'slug' => 'gangbang',
+            'name' => 'Gangbang Hentai',
+            'icon' => 'fa-solid fa-users',
+            'keywords' => ['gangbang', 'gang bang', 'group', 'orgy', 'threesome', 'foursome', 'multiple', 'harem'],
+        ],
+        'cartoon' => [
+            'slug' => 'cartoon',
+            'name' => 'Cartoon Hentai',
+            'icon' => 'fa-solid fa-paintbrush',
+            'keywords' => ['cartoon', 'animation', 'animated', 'toon', 'western', 'parody', 'drawn'],
+        ],
+        'uncensored' => [
+            'slug' => 'uncensored',
+            'name' => 'Uncensored Hentai',
+            'icon' => 'fa-solid fa-eye',
+            'keywords' => ['uncensored', 'decensored', 'mosaic', 'raw', 'unfiltered'],
+        ],
         '3d' => [
             'slug' => '3d',
-            'name' => '3D',
+            'name' => '3D Hentai',
             'icon' => 'fa-solid fa-cube',
             'keywords' => ['3d', 'cgi', 'sfm', 'blender', '3-d'],
+        ],
+        'anime' => [
+            'slug' => 'anime',
+            'name' => 'Anime Hentai',
+            'icon' => 'fa-solid fa-tv',
+            'keywords' => ['hentai', 'anime', 'ecchi', 'doujinshi', 'ova'],
         ],
         'busty' => [
             'slug' => 'busty',

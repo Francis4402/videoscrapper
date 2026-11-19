@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
-@section('title', $video->title . ' - Watch Full HD Online | HentaiFlex')
-@section('meta_description', Str::limit(strip_tags($video->description ?: 'Watch ' . $video->title . ' in full HD streaming on HentaiFlex. Ultra-fast direct playback, high resolution, no buffering.'), 160))
+@section('title', $video->title . ' - Watch Full HD Hentai Online | HentaiFlex')
+@section('meta_description', Str::limit(strip_tags($video->description ?: 'Watch ' . $video->title . ' full episode in HD on HentaiFlex. Stream free anime, cartoon hentai, gangbang, 3D and uncensored streaming with zero buffering.'), 160))
+@section('meta_keywords', addslashes($video->title) . ', watch hentai, hentaiflex, gangbang hentai, cartoon hentai, uncensored hentai, 3d hentai, hd anime, hentai streaming')
 @section('og_type', 'video.other')
 @section('og_image', $video->thumbnail_url ?: '')
 @section('canonical_url', route('videos.watch', $video->slug ?: $video->id))
@@ -13,6 +14,9 @@
     "@type": "VideoObject",
     "name": "{{ addslashes($video->title) }}",
     "description": "{{ addslashes($video->description ?: 'Watch ' . $video->title . ' in full HD streaming on HentaiFlex.') }}",
+    "keywords": "hentai, hentaiflex, gangbang hentai, cartoon hentai, 3d hentai, uncensored anime",
+    "genre": ["Hentai", "Anime", "Animation"],
+    "isFamilyFriendly": "false",
     "thumbnailUrl": [
         "{{ $video->thumbnail_url ?: url('/images/placeholder.jpg') }}"
     ],
@@ -22,6 +26,26 @@
     @endif
     "contentUrl": "{{ route('stream.proxy', $video->id) }}",
     "embedUrl": "{{ route('videos.watch', $video->slug ?: $video->id) }}"
+}
+</script>
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Hentai Videos",
+            "item": "{{ route('home') }}"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "{{ addslashes($video->title) }}",
+            "item": "{{ route('videos.watch', $video->slug ?: $video->id) }}"
+        }
+    ]
 }
 </script>
 @endpush

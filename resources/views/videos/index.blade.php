@@ -1,7 +1,91 @@
 @extends('layouts.app')
 
-@section('title', 'HentaiFlex - Watch Free HD Anime & Hentai Streaming Online')
-@section('meta_description', 'Stream free HD anime and hentai videos with instant direct playback, zero lag, and no buffering on HentaiFlex. Browse uncensored, 3D, and trending series.')
+@php
+    $seoTitle = 'Hentai: Watch Free HD Hentai Videos & Anime Online | HentaiFlex';
+    $seoDesc = 'Watch free HD hentai, gangbang hentai, cartoon hentai, and 3D uncensored anime videos online on HentaiFlex. Stream thousands of full-length episodes with zero buffering.';
+    $seoCanonical = route('home');
+
+    if ($currentCategory && isset($categories[$currentCategory])) {
+        $catName = $categories[$currentCategory]['name'];
+        $seoTitle = "{$catName} Videos - Watch Free HD {$catName} Online | HentaiFlex";
+        $seoDesc = "Stream the best {$catName} full-length videos and anime series in high definition on HentaiFlex. Fast playback, no lag, mobile-friendly free streaming.";
+        $seoCanonical = route('home', ['category' => $currentCategory]);
+    } elseif (request('q')) {
+        $q = e(request('q'));
+        $seoTitle = "{$q} Hentai Videos - Free HD Streaming | HentaiFlex";
+        $seoDesc = "Watch free {$q} hentai and anime streaming videos on HentaiFlex. High definition quality with ultra-fast direct playback.";
+        $seoCanonical = route('home', ['q' => request('q')]);
+    }
+@endphp
+
+@section('title', $seoTitle)
+@section('meta_description', $seoDesc)
+@section('canonical_url', $seoCanonical)
+
+@push('schema')
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {
+            "@type": "Question",
+            "name": "What is HentaiFlex and how do I watch free hentai online?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "HentaiFlex is a premier high-definition hentai video streaming platform offering thousands of free full-length anime episodes, gangbang hentai, cartoon hentai, and 3D animations with instant direct MP4 playback and no buffering."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Does HentaiFlex have gangbang hentai and cartoon hentai videos?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, HentaiFlex features extensive dedicated categories for gangbang hentai, group harem action, western cartoon hentai parodies, 3D SFM animations, and classic uncensored Japanese anime series in full 1080p HD."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Are the videos on HentaiFlex completely free with no registration required?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "All videos on HentaiFlex are 100% free to stream with no registration, no hidden fees, and zero software downloads required. Direct fast playback works smoothly across all devices."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Is HentaiFlex compatible with mobile phones and tablets?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "HentaiFlex is fully optimized for mobile devices (iOS, Android), tablets, and desktop browsers, delivering adaptive resolution, touch-friendly player controls, and zero stuttering."
+            }
+        }
+    ]
+}
+</script>
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Hentai Videos",
+            "item": "{{ route('home') }}"
+        }
+        @if($currentCategory && isset($categories[$currentCategory]))
+        ,{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "{{ $categories[$currentCategory]['name'] }} Videos",
+            "item": "{{ route('home', ['category' => $currentCategory]) }}"
+        }
+        @endif
+    ]
+}
+</script>
+@endpush
 
 @section('content')
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -12,10 +96,16 @@
 
         <div class="relative z-10 max-w-2xl mx-auto text-center">
             <h1 class="text-3xl sm:text-5xl font-black tracking-tight text-white mb-3">
-                Watch Free HD Videos & Anime
+                @if($currentCategory && isset($categories[$currentCategory]))
+                    {{ $categories[$currentCategory]['name'] }} Videos
+                @elseif(request('q'))
+                    {{ e(request('q')) }} Hentai Videos
+                @else
+                    Hentai - Watch Free HD Videos & Anime
+                @endif
             </h1>
             <p class="text-slate-400 text-sm sm:text-base mb-6">
-                Stream uncensored, 3D, and popular series with ultra-fast direct playback and zero buffering.
+                Stream uncensored hentai, gangbang hentai, cartoon hentai, and 3D anime series with ultra-fast direct playback and zero buffering.
             </p>
 
             <!-- Search Form -->
@@ -241,6 +331,120 @@
             </p>
         </div>
     @endif
+
+    <!-- Comprehensive SEO Content & Keyword Hub -->
+    <div class="mt-16 pt-10 border-t border-slate-800/80">
+        <div class="rounded-3xl bg-slate-900/40 border border-slate-800/80 p-6 sm:p-10 text-slate-300">
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mb-4 flex items-center gap-3">
+                <i class="fa-solid fa-fire text-fuchsia-400"></i>
+                <span>Watch Free HD Hentai, Gangbang Hentai & Cartoon Hentai on HentaiFlex</span>
+            </h2>
+            <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                Welcome to <strong class="text-white">HentaiFlex</strong>, your ultimate streaming destination to watch the highest quality <strong class="text-fuchsia-400">hentai</strong>, <strong class="text-fuchsia-400">gangbang hentai</strong>, <strong class="text-fuchsia-400">cartoon hentai</strong>, and <strong class="text-fuchsia-400">3D anime videos</strong> online for free. Enjoy thousands of full-length episodes, uncensored classics, and trending releases with zero buffering and instant direct playback.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-8">
+                <!-- Gangbang Hentai SEO Card -->
+                <div class="p-5 rounded-2xl bg-slate-950/60 border border-slate-800/80">
+                    <div class="w-10 h-10 rounded-xl bg-fuchsia-600/20 text-fuchsia-400 flex items-center justify-center mb-3">
+                        <i class="fa-solid fa-users text-lg"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-white mb-2">Gangbang Hentai Streaming</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Experience thrilling group and harem anime series. Our gangbang hentai collection features multi-character storylines, uncensored encounters, and high-intensity episodes updated daily.
+                    </p>
+                    <a href="{{ route('home', ['category' => 'gangbang']) }}" class="mt-3 inline-flex items-center gap-1.5 text-xs text-fuchsia-400 hover:text-fuchsia-300 font-semibold">
+                        Browse Gangbang Hentai <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </a>
+                </div>
+
+                <!-- Cartoon Hentai SEO Card -->
+                <div class="p-5 rounded-2xl bg-slate-950/60 border border-slate-800/80">
+                    <div class="w-10 h-10 rounded-xl bg-pink-600/20 text-pink-400 flex items-center justify-center mb-3">
+                        <i class="fa-solid fa-paintbrush text-lg"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-white mb-2">Cartoon Hentai & Parodies</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Explore hand-drawn cartoon hentai, animated western toons, pop culture parodies, and expressive 2D animations in full 1080p high definition streaming.
+                    </p>
+                    <a href="{{ route('home', ['category' => 'cartoon']) }}" class="mt-3 inline-flex items-center gap-1.5 text-pink-400 hover:text-pink-300 font-semibold">
+                        Browse Cartoon Hentai <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </a>
+                </div>
+
+                <!-- 3D & Uncensored SEO Card -->
+                <div class="p-5 rounded-2xl bg-slate-950/60 border border-slate-800/80">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-600/20 text-indigo-400 flex items-center justify-center mb-3">
+                        <i class="fa-solid fa-cube text-lg"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-white mb-2">3D & Uncensored Hentai</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Immerse yourself in top-tier SFM, Blender, and CGI animations. Watch crystal-clear uncensored hentai with fluid 60FPS motion and crisp surround sound.
+                    </p>
+                    <a href="{{ route('home', ['category' => '3d']) }}" class="mt-3 inline-flex items-center gap-1.5 text-indigo-400 hover:text-indigo-300 font-semibold">
+                        Browse 3D Hentai <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- SEO Keyword Pill Tags -->
+            <div class="mt-8 pt-6 border-t border-slate-800/80">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-3">
+                    <i class="fa-solid fa-tags mr-1 text-fuchsia-400"></i> Popular Search Keywords:
+                </span>
+                <div class="flex flex-wrap gap-2 text-xs">
+                    <a href="{{ route('home', ['q' => 'hentai']) }}" class="px-3 py-1.5 rounded-lg bg-slate-950 text-slate-400 hover:text-white hover:bg-fuchsia-950/50 border border-slate-800 hover:border-fuchsia-600/50 transition">hentai</a>
+                    <a href="{{ route('home', ['category' => 'gangbang']) }}" class="px-3 py-1.5 rounded-lg bg-slate-950 text-slate-400 hover:text-white hover:bg-fuchsia-950/50 border border-slate-800 hover:border-fuchsia-600/50 transition">gangbang hentai</a>
+                    <a href="{{ route('home', ['category' => 'cartoon']) }}" class="px-3 py-1.5 rounded-lg bg-slate-950 text-slate-400 hover:text-white hover:bg-fuchsia-950/50 border border-slate-800 hover:border-fuchsia-600/50 transition">cartoon hentai</a>
+                    <a href="{{ route('home') }}" class="px-3 py-1.5 rounded-lg bg-slate-950 text-slate-400 hover:text-white hover:bg-fuchsia-950/50 border border-slate-800 hover:border-fuchsia-600/50 transition">hentaiflex</a>
+                    <a href="{{ route('home', ['category' => '3d']) }}" class="px-3 py-1.5 rounded-lg bg-slate-950 text-slate-400 hover:text-white hover:bg-fuchsia-950/50 border border-slate-800 hover:border-fuchsia-600/50 transition">3d hentai</a>
+                    <a href="{{ route('home', ['category' => 'uncensored']) }}" class="px-3 py-1.5 rounded-lg bg-slate-950 text-slate-400 hover:text-white hover:bg-fuchsia-950/50 border border-slate-800 hover:border-fuchsia-600/50 transition">uncensored hentai</a>
+                    <a href="{{ route('home', ['category' => 'anime']) }}" class="px-3 py-1.5 rounded-lg bg-slate-950 text-slate-400 hover:text-white hover:bg-fuchsia-950/50 border border-slate-800 hover:border-fuchsia-600/50 transition">anime hentai</a>
+                    <a href="{{ route('home', ['q' => 'english sub']) }}" class="px-3 py-1.5 rounded-lg bg-slate-950 text-slate-400 hover:text-white hover:bg-fuchsia-950/50 border border-slate-800 hover:border-fuchsia-600/50 transition">english sub hentai</a>
+                    <a href="{{ route('home', ['q' => 'free streaming']) }}" class="px-3 py-1.5 rounded-lg bg-slate-950 text-slate-400 hover:text-white hover:bg-fuchsia-950/50 border border-slate-800 hover:border-fuchsia-600/50 transition">free hentai streaming</a>
+                    <a href="{{ route('home', ['q' => 'hd full episode']) }}" class="px-3 py-1.5 rounded-lg bg-slate-950 text-slate-400 hover:text-white hover:bg-fuchsia-950/50 border border-slate-800 hover:border-fuchsia-600/50 transition">full hentai episodes</a>
+                </div>
+            </div>
+
+            <!-- FAQ Section -->
+            <div class="mt-8 pt-6 border-t border-slate-800/80">
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-circle-question text-fuchsia-400"></i>
+                    <span>Frequently Asked Questions</span>
+                </h3>
+                <div class="space-y-3">
+                    <details class="group rounded-xl bg-slate-950/70 border border-slate-800/80 p-4 transition [&_summary::-webkit-details-marker]:hidden">
+                        <summary class="flex items-center justify-between cursor-pointer font-semibold text-sm text-slate-200 group-hover:text-fuchsia-300">
+                            <span>Where can I watch free HD hentai, gangbang hentai, and cartoon hentai online?</span>
+                            <i class="fa-solid fa-chevron-down text-xs transition group-open:rotate-180 text-fuchsia-400"></i>
+                        </summary>
+                        <p class="mt-3 text-xs text-slate-400 leading-relaxed">
+                            HentaiFlex allows you to watch thousands of free HD hentai, gangbang hentai, cartoon hentai, and 3D videos with no registration, no subscription fees, and no buffering on any device.
+                        </p>
+                    </details>
+                    <details class="group rounded-xl bg-slate-950/70 border border-slate-800/80 p-4 transition [&_summary::-webkit-details-marker]:hidden">
+                        <summary class="flex items-center justify-between cursor-pointer font-semibold text-sm text-slate-200 group-hover:text-fuchsia-300">
+                            <span>Does HentaiFlex support mobile streaming for iOS and Android?</span>
+                            <i class="fa-solid fa-chevron-down text-xs transition group-open:rotate-180 text-fuchsia-400"></i>
+                        </summary>
+                        <p class="mt-3 text-xs text-slate-400 leading-relaxed">
+                            Yes, HentaiFlex features an ultra-responsive HTML5 and HLS player fully optimized for smartphones, tablets, and desktop computers with touch controls and fullscreen support.
+                        </p>
+                    </details>
+                    <details class="group rounded-xl bg-slate-950/70 border border-slate-800/80 p-4 transition [&_summary::-webkit-details-marker]:hidden">
+                        <summary class="flex items-center justify-between cursor-pointer font-semibold text-sm text-slate-200 group-hover:text-fuchsia-300">
+                            <span>Are full uncensored episodes available on HentaiFlex?</span>
+                            <i class="fa-solid fa-chevron-down text-xs transition group-open:rotate-180 text-fuchsia-400"></i>
+                        </summary>
+                        <p class="mt-3 text-xs text-slate-400 leading-relaxed">
+                            Yes, our library features full-length uncensored anime, decensored releases, and English-subtitled editions of popular hentai series.
+                        </p>
+                    </details>
+                </div>
+            </div>
+
+        </div>
+    </div>
 
 </div>
 @endsection
