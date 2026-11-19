@@ -202,6 +202,21 @@
     <!-- Scripts -->
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script>
+        // Anti-Scraping / Right-Click Media Protection
+        document.addEventListener('contextmenu', function(e) {
+            if (e.target.closest('video') || e.target.closest('#player-container-wrapper') || e.target.closest('.plyr')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+        document.addEventListener('dragstart', function(e) {
+            if (e.target.tagName === 'VIDEO' || e.target.closest('video')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    </script>
     @stack('scripts')
 
     <!-- Popunder / On-Click Ad Script -->

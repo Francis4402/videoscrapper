@@ -62,11 +62,18 @@ class StreamProxyController extends Controller
             $contentRange = $response->getHeaderLine('Content-Range');
             $acceptRanges = $response->getHeaderLine('Accept-Ranges') ?: 'bytes';
 
+            $origin = $request->header('Origin');
+            $allowedOrigin = $origin && in_array(strtolower(parse_url($origin, PHP_URL_HOST) ?? ''), ['localhost', '127.0.0.1', strtolower($request->getHost()), 'hentaiflex.com', 'www.hentaiflex.com'], true)
+                ? $origin
+                : url('/');
+
             $responseHeaders = [
                 'Content-Type' => $contentType,
                 'Accept-Ranges' => $acceptRanges,
-                'Access-Control-Allow-Origin' => '*',
-                'Cache-Control' => 'no-cache',
+                'Access-Control-Allow-Origin' => $allowedOrigin,
+                'Access-Control-Allow-Credentials' => 'true',
+                'Cache-Control' => 'no-cache, no-store, private',
+                'X-Content-Type-Options' => 'nosniff',
             ];
 
             if ($contentLength) {
