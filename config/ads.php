@@ -101,6 +101,13 @@ return [
             'code'    => env('ADS_FOOTER_STICKY_CODE', ''),
             'url'     => env('ADS_FOOTER_STICKY_URL', env('ADS_ONCLICK_URL', 'https://syndication.exoclick.com/splash.php?idzone=default')),
         ],
+
+        'home_bottom' => [
+            'enabled' => env('ADS_HOME_BOTTOM_ENABLED', true),
+            'size'    => '728x90 / 320x50',
+            'code'    => env('ADS_HOME_BOTTOM_CODE', ''),
+            'url'     => env('ADS_HOME_BOTTOM_URL', env('ADS_ONCLICK_URL', 'https://syndication.exoclick.com/splash.php?idzone=default')),
+        ],
     ],
 
 ];

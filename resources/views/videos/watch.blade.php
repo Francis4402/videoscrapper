@@ -308,7 +308,7 @@
 
     // Start playback when centered cover or play button is clicked
     function startPlayback() {
-        // Trigger On-Click Popunder Ad on Play
+        // 1. Immediately trigger popup ad on trusted user click gesture
         if (typeof window.triggerOnClickAd === 'function') {
             window.triggerOnClickAd('video_play');
         }
@@ -316,7 +316,7 @@
         const cover = document.getElementById('player-cover');
         const video = document.getElementById('video-player');
 
-        // Instantly disable pointer events and hide cover
+        // 2. Instantly disable pointer events and hide cover overlay
         if (cover) {
             cover.style.pointerEvents = 'none';
             cover.style.opacity = '0';
@@ -325,7 +325,7 @@
             }, 300);
         }
 
-        // Trigger native HTML5 video playback
+        // 3. Immediately start video stream playback
         if (video) {
             video.controls = true;
             if (!video.src && video.querySelector('source')) {

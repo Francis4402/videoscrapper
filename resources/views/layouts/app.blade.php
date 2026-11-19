@@ -11,9 +11,9 @@
     <meta name="google-site-verification" content="{{ env('GOOGLE_SITE_VERIFICATION') }}">
     @endif
 
-    <title>@yield('title', 'HentaiFlex - Watch Free HD Hentai, Gangbang Hentai, Cartoon Hentai & 3D Anime Streaming Online')</title>
-    <meta name="description" content="@yield('meta_description', 'Watch free HD hentai, gangbang hentai, cartoon hentai, 3D uncensored anime videos online on HentaiFlex. Ultra-fast direct playback, high resolution, no buffering, mobile-friendly full-length episodes.')">
-    <meta name="keywords" content="@yield('meta_keywords', 'hentai, gangbang hentai, cartoon hentai, hentaiflex, hentai flex, watch hentai online, 3d hentai, uncensored hentai, anime hentai, free hentai, best hentai streaming, hd anime videos, english sub hentai, full hentai episodes, doujinshi anime, group hentai, harem hentai, animated hentai')">
+    <title>@yield('title', 'Watch Free Hentai Online - HD Hentai Streaming, Gangbang & Cartoon Anime | HentaiFlex')</title>
+    <meta name="description" content="@yield('meta_description', 'Watch free HD hentai online with zero buffering. Stream thousands of uncensored full-length hentai episodes, gangbang hentai, cartoon hentai, 3D SFM animations, and English sub anime on HentaiFlex.')">
+    <meta name="keywords" content="@yield('meta_keywords', 'watch hentai, free hentai, hentai online, hentai streaming, best hentai sites, watch hentai online free, uncensored hentai, gangbang hentai, cartoon hentai, 3d hentai, full hentai episodes, english sub hentai, hentai tube, hd anime, hentai videos, hentaiflex')">
     <link rel="canonical" href="@yield('canonical_url', url()->current())">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 
@@ -157,9 +157,6 @@
         </div>
     </header>
 
-    <!-- Header Banner Ad Slot (728x90 / 320x50) -->
-    @include('partials.ads.slot', ['slot' => 'header', 'class' => 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4'])
-
     <!-- Alerts / Flash Messages -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full mt-4">
         @if (session('success'))
@@ -246,8 +243,29 @@
 
             window.triggerOnClickAd = function(source) {
                 if (!adUrl) return;
-                const lastTime = localStorage.getItem('hentaiflex_last_ad_pop');
                 const now = Date.now();
+
+                // Video play click: Highest earning placement, triggers pop ad while video plays
+                if (source === 'video_play') {
+                    const lastPlayTime = sessionStorage.getItem('hentaiflex_last_video_play_pop');
+                    if (lastPlayTime && (now - parseInt(lastPlayTime, 10)) < 15000) {
+                        return; // 15-second debounce on repeated play button clicks
+                    }
+                    try {
+                        const win = window.open(adUrl, '_blank');
+                        if (win) {
+                            sessionStorage.setItem('hentaiflex_last_video_play_pop', now.toString());
+                            localStorage.setItem('hentaiflex_last_ad_pop', now.toString());
+                            window.focus();
+                        }
+                    } catch (e) {
+                        console.warn('Popup suppressed:', e);
+                    }
+                    return;
+                }
+
+                // General page click throttle
+                const lastTime = localStorage.getItem('hentaiflex_last_ad_pop');
                 if (lastTime && (now - parseInt(lastTime, 10)) < (freqMinutes * 60 * 1000)) {
                     return;
                 }
@@ -256,6 +274,7 @@
                     const win = window.open(adUrl, '_blank');
                     if (win) {
                         localStorage.setItem('hentaiflex_last_ad_pop', now.toString());
+                        window.focus();
                     }
                 } catch (e) {
                     // Suppressed by browser pop blocker

@@ -20,6 +20,7 @@
 
 @section('title', $seoTitle)
 @section('meta_description', $seoDesc)
+@section('meta_keywords', 'watch hentai, free hentai, hentai online, hentai streaming, best hentai sites, watch hentai online free, uncensored hentai, gangbang hentai, cartoon hentai, 3d hentai, full hentai episodes, english sub hentai, hentai tube, hd anime, hentai videos, hentaiflex')
 @section('canonical_url', $seoCanonical)
 
 @push('schema')
@@ -187,6 +188,9 @@
         </div>
     </div>
 
+    <!-- Main Content Leaderboard Banner -->
+    @include('partials.ads.slot', ['slot' => 'header', 'class' => 'mb-8'])
+
     <!-- Header & Stats Bar -->
     <div class="flex items-center justify-between pb-4 mb-6 border-b border-slate-800/80">
         <div class="flex items-center gap-3">
@@ -307,8 +311,8 @@
                     </div>
                 </div>
 
-                {{-- In-Feed Native Ad Card --}}
-                @if($loop->iteration === 4 || ($loop->iteration > 4 && $loop->iteration % 8 === 0))
+                {{-- In-Feed Native Ad Card: High-converting sponsored video placement --}}
+                @if($loop->iteration === 3 || ($loop->iteration > 3 && $loop->iteration % 6 === 0))
                     @include('partials.ads.grid-feed')
                 @endif
             @endforeach
@@ -318,6 +322,9 @@
         <div class="mt-10">
             {{ $videos->links() }}
         </div>
+
+        <!-- Bottom Homepage Leaderboard Banner Ad -->
+        @include('partials.ads.slot', ['slot' => 'home_bottom', 'class' => 'mt-10 mb-4'])
 
     @else
         <!-- Empty State -->
@@ -393,16 +400,22 @@
                     <i class="fa-solid fa-tags mr-1 text-fuchsia-400"></i> Popular Search Keywords:
                 </span>
                 <div class="flex flex-wrap gap-2 text-xs">
+                    <a href="{{ route('home', ['q' => 'watch hentai']) }}" class="px-3 py-1.5 rounded-lg bg-slate-950 text-slate-300 hover:text-white hover:bg-fuchsia-950/50 border border-slate-800 hover:border-fuchsia-600/50 transition font-medium">watch hentai</a>
+                    <a href="{{ route('home', ['q' => 'watch hentai online']) }}" class="px-3 py-1.5 rounded-lg bg-slate-950 text-slate-300 hover:text-white hover:bg-fuchsia-950/50 border border-slate-800 hover:border-fuchsia-600/50 transition font-medium">watch hentai online</a>
+                    <a href="{{ route('home', ['q' => 'free hentai']) }}" class="px-3 py-1.5 rounded-lg bg-slate-950 text-slate-300 hover:text-white hover:bg-fuchsia-950/50 border border-slate-800 hover:border-fuchsia-600/50 transition font-medium">free hentai</a>
+                    <a href="{{ route('home', ['q' => 'hentai streaming']) }}" class="px-3 py-1.5 rounded-lg bg-slate-950 text-slate-300 hover:text-white hover:bg-fuchsia-950/50 border border-slate-800 hover:border-fuchsia-600/50 transition font-medium">hentai streaming</a>
+                    <a href="{{ route('home', ['q' => 'best hentai sites']) }}" class="px-3 py-1.5 rounded-lg bg-slate-950 text-slate-300 hover:text-white hover:bg-fuchsia-950/50 border border-slate-800 hover:border-fuchsia-600/50 transition font-medium">best hentai sites</a>
                     <a href="{{ route('home', ['q' => 'hentai']) }}" class="px-3 py-1.5 rounded-lg bg-slate-950 text-slate-400 hover:text-white hover:bg-fuchsia-950/50 border border-slate-800 hover:border-fuchsia-600/50 transition">hentai</a>
                     <a href="{{ route('home', ['category' => 'gangbang']) }}" class="px-3 py-1.5 rounded-lg bg-slate-950 text-slate-400 hover:text-white hover:bg-fuchsia-950/50 border border-slate-800 hover:border-fuchsia-600/50 transition">gangbang hentai</a>
                     <a href="{{ route('home', ['category' => 'cartoon']) }}" class="px-3 py-1.5 rounded-lg bg-slate-950 text-slate-400 hover:text-white hover:bg-fuchsia-950/50 border border-slate-800 hover:border-fuchsia-600/50 transition">cartoon hentai</a>
-                    <a href="{{ route('home') }}" class="px-3 py-1.5 rounded-lg bg-slate-950 text-slate-400 hover:text-white hover:bg-fuchsia-950/50 border border-slate-800 hover:border-fuchsia-600/50 transition">hentaiflex</a>
                     <a href="{{ route('home', ['category' => '3d']) }}" class="px-3 py-1.5 rounded-lg bg-slate-950 text-slate-400 hover:text-white hover:bg-fuchsia-950/50 border border-slate-800 hover:border-fuchsia-600/50 transition">3d hentai</a>
                     <a href="{{ route('home', ['category' => 'uncensored']) }}" class="px-3 py-1.5 rounded-lg bg-slate-950 text-slate-400 hover:text-white hover:bg-fuchsia-950/50 border border-slate-800 hover:border-fuchsia-600/50 transition">uncensored hentai</a>
                     <a href="{{ route('home', ['category' => 'anime']) }}" class="px-3 py-1.5 rounded-lg bg-slate-950 text-slate-400 hover:text-white hover:bg-fuchsia-950/50 border border-slate-800 hover:border-fuchsia-600/50 transition">anime hentai</a>
                     <a href="{{ route('home', ['q' => 'english sub']) }}" class="px-3 py-1.5 rounded-lg bg-slate-950 text-slate-400 hover:text-white hover:bg-fuchsia-950/50 border border-slate-800 hover:border-fuchsia-600/50 transition">english sub hentai</a>
                     <a href="{{ route('home', ['q' => 'free streaming']) }}" class="px-3 py-1.5 rounded-lg bg-slate-950 text-slate-400 hover:text-white hover:bg-fuchsia-950/50 border border-slate-800 hover:border-fuchsia-600/50 transition">free hentai streaming</a>
                     <a href="{{ route('home', ['q' => 'hd full episode']) }}" class="px-3 py-1.5 rounded-lg bg-slate-950 text-slate-400 hover:text-white hover:bg-fuchsia-950/50 border border-slate-800 hover:border-fuchsia-600/50 transition">full hentai episodes</a>
+                    <a href="{{ route('home', ['q' => 'hentai tube']) }}" class="px-3 py-1.5 rounded-lg bg-slate-950 text-slate-400 hover:text-white hover:bg-fuchsia-950/50 border border-slate-800 hover:border-fuchsia-600/50 transition">hentai tube</a>
+                    <a href="{{ route('home') }}" class="px-3 py-1.5 rounded-lg bg-slate-950 text-slate-400 hover:text-white hover:bg-fuchsia-950/50 border border-slate-800 hover:border-fuchsia-600/50 transition">hentaiflex</a>
                 </div>
             </div>
 
