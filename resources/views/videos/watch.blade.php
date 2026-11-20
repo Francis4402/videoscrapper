@@ -36,7 +36,7 @@
     "duration": "PT{{ $totalSeconds }}S",
     @endif
     "contentUrl": "{{ route('stream.proxy', $video->id) }}",
-    "embedUrl": "{{ route('videos.watch', $video->slug ?: $video->id) }}"
+    "embedUrl": "{{ route('videos.embed', $video->slug ?: $video->id) }}"
 }
 </script>
 <script type="application/ld+json">

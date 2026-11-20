@@ -3,7 +3,7 @@
         xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
     <!-- Homepage -->
     <url>
-        <loc>{{ url('/') }}</loc>
+        <loc>{{ rtrim(url('/'), '/') }}/</loc>
         <changefreq>hourly</changefreq>
         <priority>1.0</priority>
     </url>
@@ -11,7 +11,7 @@
     <!-- Categories -->
     @foreach($categories as $slug => $cat)
     <url>
-        <loc>{{ url('/?category=' . $slug) }}</loc>
+        <loc>{{ rtrim(url('/'), '/') }}/?category={{ $slug }}</loc>
         <changefreq>daily</changefreq>
         <priority>0.8</priority>
     </url>
@@ -24,6 +24,7 @@
         <lastmod>{{ $video->updated_at->toAtomString() }}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
+        @if($video->video_url)
         <video:video>
             @php
                 $thumb = $video->thumbnail_url;
@@ -37,10 +38,8 @@
             <video:thumbnail_loc>{{ $thumb }}</video:thumbnail_loc>
             <video:title><![CDATA[{{ $video->seo_title }}]]></video:title>
             <video:description><![CDATA[{{ Str::limit(strip_tags($video->seo_description), 250) }}]]></video:description>
-            @if($video->video_url)
             <video:content_loc>{{ route('stream.proxy', $video->id) }}</video:content_loc>
-            @endif
-            <video:player_loc allow_embed="yes">{{ route('videos.watch', $video->slug ?: $video->id) }}</video:player_loc>
+            <video:player_loc allow_embed="yes">{{ route('videos.embed', $video->slug ?: $video->id) }}</video:player_loc>
             @if($video->duration)
             @php
                 $parts = array_map('intval', explode(':', $video->duration));
@@ -78,6 +77,7 @@
             <video:view_count>12500</video:view_count>
             <video:rating>4.9</video:rating>
         </video:video>
+        @endif
     </url>
     @endforeach
 </urlset>

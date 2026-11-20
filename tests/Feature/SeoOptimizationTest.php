@@ -49,9 +49,10 @@ class SeoOptimizationTest extends TestCase
     {
         config(['scraper.target_url' => 'https://example.com/source/101']);
 
+        $slug = 'top-gangbang-cartoon-hentai-adventure';
         ScrapedVideo::create([
             'title' => 'Top Gangbang Cartoon Hentai Adventure',
-            'slug' => 'top-gangbang-cartoon-hentai-adventure',
+            'slug' => $slug,
             'source_url' => 'https://example.com/source/101',
             'video_url' => 'https://example.com/video101.mp4',
             'thumbnail_url' => 'https://example.com/thumb101.jpg',
@@ -67,5 +68,29 @@ class SeoOptimizationTest extends TestCase
         $response->assertSee('<video:tag>cartoon hentai</video:tag>', false);
         $response->assertSee('<video:tag>hentaiflex</video:tag>', false);
         $response->assertSee('<video:category>Anime &amp; Hentai</video:category>', false);
+
+        // Verify Google Video Sitemap rule: player_loc must NOT match loc
+        $response->assertSee('<loc>' . route('videos.watch', $slug) . '</loc>', false);
+        $response->assertSee('<video:player_loc allow_embed="yes">' . route('videos.embed', $slug) . '</video:player_loc>', false);
+        $response->assertSee('<video:content_loc>', false);
+    }
+
+    public function test_embed_player_loads_successfully_without_xframe_restrictions(): void
+    {
+        $video = ScrapedVideo::create([
+            'title' => 'Embed Test Hentai Video',
+            'slug' => 'embed-test-hentai-video',
+            'source_url' => 'https://example.com/source/102',
+            'video_url' => 'https://example.com/video102.mp4',
+            'thumbnail_url' => 'https://example.com/thumb102.jpg',
+            'duration' => '10:00',
+        ]);
+
+        $response = $this->get('/embed/' . $video->slug);
+        $response->assertStatus(200);
+        $response->assertHeader('Content-Security-Policy', 'frame-ancestors *');
+        $response->assertHeaderMissing('X-Frame-Options');
+        $response->assertSee('video-player', false);
+        $response->assertSee('startPlayback', false);
     }
 }

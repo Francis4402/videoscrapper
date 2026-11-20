@@ -55,6 +55,11 @@ class AntiScrapeProtection
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // 0. Whitelist public SEO discovery endpoints so search engine validators never fail
+        if ($request->is('sitemap.xml') || $request->is('robots.txt')) {
+            return $next($request);
+        }
+
         $userAgent = trim((string) $request->header('User-Agent', ''));
 
         // 1. Block requests with empty or missing User-Agent (real browsers always send one)
@@ -71,7 +76,7 @@ class AntiScrapeProtection
         foreach ($this->allowedAgents as $allowed) {
             if (str_contains($lowerAgent, $allowed)) {
                 $response = $next($request);
-                return $this->addSecurityHeaders($response);
+                return $this->addSecurityHeaders($request, $response);
             }
         }
 
@@ -122,18 +127,24 @@ class AntiScrapeProtection
 
         $response = $next($request);
 
-        return $this->addSecurityHeaders($response);
+        return $this->addSecurityHeaders($request, $response);
     }
 
     /**
      * Attach anti-scraping and anti-clickjacking security headers.
      */
-    protected function addSecurityHeaders(Response $response): Response
+    protected function addSecurityHeaders(Request $request, Response $response): Response
     {
-        $response->headers->set('X-Frame-Options', 'SAMEORIGIN');
+        if ($request->is('embed/*')) {
+            $response->headers->remove('X-Frame-Options');
+            $response->headers->set('Content-Security-Policy', 'frame-ancestors *');
+        } else {
+            $response->headers->set('X-Frame-Options', 'SAMEORIGIN');
+            $response->headers->set('X-Robots-Tag', 'noarchive');
+        }
+
         $response->headers->set('X-Content-Type-Options', 'nosniff');
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
-        $response->headers->set('X-Robots-Tag', 'noarchive');
 
         return $response;
     }

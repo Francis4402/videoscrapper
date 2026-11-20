@@ -173,6 +173,47 @@ class VideoController extends Controller
             }
         }
 
+        [$resolvedStreamUrl, $videoType] = $this->resolveVideoStream($video);
+
+        $relatedQuery = ScrapedVideo::notFunny()->where('id', '!=', $video->id);
+        if (!empty($activeUrls)) {
+            $relatedQuery->whereIn('source_url', $activeUrls);
+        }
+        $relatedVideos = $relatedQuery->latest()->take(10)->get();
+
+        return view('videos.watch', [
+            'video' => $video,
+            'resolvedStreamUrl' => $resolvedStreamUrl,
+            'videoType' => $videoType,
+            'relatedVideos' => $relatedVideos,
+        ]);
+    }
+
+    /**
+     * Display a clean, embeddable video player.
+     */
+    public function embed(string $slug)
+    {
+        $video = ScrapedVideo::notFunny()
+            ->where(function ($q) use ($slug) {
+                $q->where('slug', $slug)->orWhere('id', $slug);
+            })
+            ->firstOrFail();
+
+        [$resolvedStreamUrl, $videoType] = $this->resolveVideoStream($video);
+
+        return response()->view('videos.embed', [
+            'video' => $video,
+            'resolvedStreamUrl' => $resolvedStreamUrl ?: route('stream.proxy', $video->id),
+            'videoType' => $videoType ?: 'direct',
+        ]);
+    }
+
+    /**
+     * Helper to resolve stream URL and stream type for video models.
+     */
+    protected function resolveVideoStream(ScrapedVideo $video): array
+    {
         $resolvedStreamUrl = $video->video_url;
         $videoType = $video->video_type;
 
@@ -262,18 +303,7 @@ class VideoController extends Controller
             }
         }
 
-        $relatedQuery = ScrapedVideo::notFunny()->where('id', '!=', $video->id);
-        if (!empty($activeUrls)) {
-            $relatedQuery->whereIn('source_url', $activeUrls);
-        }
-        $relatedVideos = $relatedQuery->latest()->take(10)->get();
-
-        return view('videos.watch', [
-            'video' => $video,
-            'resolvedStreamUrl' => $resolvedStreamUrl,
-            'videoType' => $videoType,
-            'relatedVideos' => $relatedVideos,
-        ]);
+        return [$resolvedStreamUrl, $videoType];
     }
 
     /**
