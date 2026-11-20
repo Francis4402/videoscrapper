@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@section('title', $video->title . ' - Watch Full HD Hentai Online | HentaiFlex')
-@section('meta_description', Str::limit(strip_tags($video->description ?: 'Watch ' . $video->title . ' full episode in HD on HentaiFlex. Stream free anime, cartoon hentai, gangbang, 3D and uncensored streaming with zero buffering.'), 160))
-@section('meta_keywords', addslashes($video->title) . ', watch hentai, hentaiflex, gangbang hentai, cartoon hentai, uncensored hentai, 3d hentai, hd anime, hentai streaming')
+@section('title', $video->seo_title)
+@section('meta_description', $video->seo_summary)
+@section('meta_keywords', addslashes($video->clean_title) . ', watch ' . addslashes($video->clean_title) . ', watch hentai, watch hentai online, free hentai, hentai streaming, best hentai sites, uncensored hentai, gangbang hentai, cartoon hentai, 3d hentai, full hentai episode, english sub hentai, hentai tube, hd anime, hentaiflex')
 @section('og_type', 'video.other')
 @section('og_image', $video->thumbnail_url ?: '')
 @section('canonical_url', route('videos.watch', $video->slug ?: $video->id))
@@ -23,9 +23,9 @@
 {
     "@@context": "https://schema.org",
     "@type": "VideoObject",
-    "name": {!! json_encode($video->title) !!},
-    "description": {!! json_encode(strip_tags($video->description ?: 'Watch ' . $video->title . ' full episode in HD on HentaiFlex.')) !!},
-    "keywords": "hentai, hentaiflex, gangbang hentai, cartoon hentai, 3d hentai, uncensored anime",
+    "name": {!! json_encode($video->seo_title) !!},
+    "description": {!! json_encode($video->seo_summary) !!},
+    "keywords": "watch hentai, free hentai, watch hentai online, hentai streaming, best hentai sites, uncensored hentai, gangbang hentai, cartoon hentai, 3d hentai, english sub hentai, full hentai episodes, hentaiflex",
     "genre": ["Hentai", "Anime", "Animation"],
     "isFamilyFriendly": "false",
     "thumbnailUrl": [
@@ -212,11 +212,9 @@
                 {{ $video->title }}
             </h1>
 
-            @if($video->description)
-                <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 text-slate-300 text-sm leading-relaxed">
-                    <p class="whitespace-pre-line">{{ $video->description }}</p>
-                </div>
-            @endif
+            <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 text-slate-300 text-sm leading-relaxed">
+                <p class="whitespace-pre-line">{{ $video->seo_description }}</p>
+            </div>
         </div>
 
         <!-- Right: Related Videos -->

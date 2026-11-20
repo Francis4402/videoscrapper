@@ -21,15 +21,15 @@
     <meta property="og:site_name" content="HentaiFlex">
     <meta property="og:type" content="@yield('og_type', 'website')">
     <meta property="og:url" content="@yield('canonical_url', url()->current())">
-    <meta property="og:title" content="@yield('title', 'HentaiFlex - Watch Free HD Hentai, Gangbang Hentai & Cartoon Hentai Streaming')">
-    <meta property="og:description" content="@yield('meta_description', 'Watch free HD hentai, gangbang hentai, cartoon hentai and 3D uncensored anime videos on HentaiFlex. Fast direct playback, no buffering.')">
+    <meta property="og:title" content="@yield('title', 'Watch Free Hentai Online - HD Hentai Streaming, Gangbang & Cartoon Anime | HentaiFlex')">
+    <meta property="og:description" content="@yield('meta_description', 'Watch free HD hentai online with zero buffering. Stream thousands of uncensored full-length hentai episodes, gangbang hentai, cartoon hentai, 3D SFM animations, and English sub anime on HentaiFlex.')">
     <meta property="og:image" content="@yield('og_image', asset('images/og-cover.jpg'))">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="@yield('canonical_url', url()->current())">
-    <meta name="twitter:title" content="@yield('title', 'HentaiFlex - Watch Free HD Hentai, Gangbang Hentai & Cartoon Hentai Streaming')">
-    <meta name="twitter:description" content="@yield('meta_description', 'Watch free HD hentai, gangbang hentai, cartoon hentai and 3D uncensored anime videos on HentaiFlex. Fast direct playback, no buffering.')">
+    <meta name="twitter:title" content="@yield('title', 'Watch Free Hentai Online - HD Hentai Streaming, Gangbang & Cartoon Anime | HentaiFlex')">
+    <meta name="twitter:description" content="@yield('meta_description', 'Watch free HD hentai online with zero buffering. Stream thousands of uncensored full-length hentai episodes, gangbang hentai, cartoon hentai, 3D SFM animations, and English sub anime on HentaiFlex.')">
     <meta name="twitter:image" content="@yield('og_image', asset('images/og-cover.jpg'))">
 
     <!-- Structured Data (JSON-LD) for Google Search -->

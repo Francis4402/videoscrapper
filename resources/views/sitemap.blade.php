@@ -35,8 +35,8 @@
                 $thumb = $thumb ?: url('/favicon.ico');
             @endphp
             <video:thumbnail_loc>{{ $thumb }}</video:thumbnail_loc>
-            <video:title><![CDATA[{{ $video->title }}]]></video:title>
-            <video:description><![CDATA[{{ Str::limit(strip_tags($video->description ?: 'Watch ' . $video->title . ' in full HD streaming on HentaiFlex.'), 200) }}]]></video:description>
+            <video:title><![CDATA[{{ $video->seo_title }}]]></video:title>
+            <video:description><![CDATA[{{ Str::limit(strip_tags($video->seo_description), 250) }}]]></video:description>
             @if($video->video_url)
             <video:content_loc>{{ route('stream.proxy', $video->id) }}</video:content_loc>
             @endif
@@ -54,16 +54,23 @@
             <video:tag>watch hentai</video:tag>
             <video:tag>watch hentai online</video:tag>
             <video:tag>free hentai</video:tag>
-            <video:tag>hentai videos</video:tag>
+            <video:tag>hentai online free</video:tag>
             <video:tag>hentai streaming</video:tag>
             <video:tag>best hentai sites</video:tag>
+            <video:tag>hentai video</video:tag>
+            <video:tag>hentai videos</video:tag>
+            <video:tag>hd hentai</video:tag>
             <video:tag>gangbang hentai</video:tag>
             <video:tag>cartoon hentai</video:tag>
             <video:tag>3d hentai</video:tag>
             <video:tag>uncensored hentai</video:tag>
             <video:tag>full hentai episodes</video:tag>
             <video:tag>english sub hentai</video:tag>
+            <video:tag>english dub hentai</video:tag>
             <video:tag>hentai tube</video:tag>
+            <video:tag>milf hentai</video:tag>
+            <video:tag>tentacle hentai</video:tag>
+            <video:tag>harem anime</video:tag>
             <video:tag>anime</video:tag>
             <video:tag>hd anime</video:tag>
             <video:tag>hentaiflex</video:tag>
