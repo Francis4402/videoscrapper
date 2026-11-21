@@ -11,7 +11,7 @@
     <!-- Categories -->
     @foreach($categories as $slug => $cat)
     <url>
-        <loc>{{ rtrim(url('/'), '/') }}/?category={{ $slug }}</loc>
+        <loc>{{ route('videos.category', $slug) }}</loc>
         <changefreq>daily</changefreq>
         <priority>0.8</priority>
     </url>

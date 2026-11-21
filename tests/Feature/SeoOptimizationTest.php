@@ -93,4 +93,42 @@ class SeoOptimizationTest extends TestCase
         $response->assertSee('video-player', false);
         $response->assertSee('startPlayback', false);
     }
+
+    public function test_dedicated_category_route_renders_seo_page(): void
+    {
+        $response = $this->get('/category/gangbang');
+        $response->assertStatus(200);
+        $response->assertSee('Gangbang Hentai Videos - Watch Free HD Gangbang Hentai Online', false);
+    }
+
+    public function test_random_video_redirects_to_watch_page(): void
+    {
+        $video = ScrapedVideo::create([
+            'title' => 'Random Test Hentai Video',
+            'slug' => 'random-test-hentai-video',
+            'source_url' => 'https://example.com/source/103',
+            'video_url' => 'https://example.com/video103.mp4',
+            'thumbnail_url' => 'https://example.com/thumb103.jpg',
+        ]);
+
+        $response = $this->get('/random');
+        $response->assertRedirect(route('videos.watch', $video->slug));
+    }
+
+    public function test_feed_xml_returns_valid_media_rss(): void
+    {
+        ScrapedVideo::create([
+            'title' => 'Feed Test Hentai Video',
+            'slug' => 'feed-test-hentai-video',
+            'source_url' => 'https://example.com/source/104',
+            'video_url' => 'https://example.com/video104.mp4',
+            'thumbnail_url' => 'https://example.com/thumb104.jpg',
+        ]);
+
+        $response = $this->get('/feed.xml');
+        $response->assertStatus(200);
+        $response->assertHeader('Content-Type', 'application/rss+xml; charset=utf-8');
+        $response->assertSee('<rss version="2.0"', false);
+        $response->assertSee('Feed Test Hentai Video', false);
+    }
 }

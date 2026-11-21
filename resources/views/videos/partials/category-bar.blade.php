@@ -32,7 +32,7 @@
                 $count = $categoryCounts[$slug] ?? 0;
             @endphp
             <a
-                href="{{ route('home', array_filter(['category' => $slug, 'q' => request('q')])) }}"
+                href="{{ request('q') ? route('home', ['category' => $slug, 'q' => request('q')]) : route('videos.category', $slug) }}"
                 class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-200 border {{ $isActive ? 'bg-gradient-to-r from-fuchsia-600 to-indigo-600 text-white shadow-lg shadow-fuchsia-600/30 border-fuchsia-400/50 scale-105 font-bold' : 'bg-slate-900/90 text-slate-300 hover:text-white hover:bg-slate-800 border-slate-800 hover:border-slate-700' }}"
             >
                 <i class="{{ $cat['icon'] }} text-xs {{ $isActive ? 'text-white' : 'text-fuchsia-400' }}"></i>

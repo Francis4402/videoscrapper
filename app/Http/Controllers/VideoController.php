@@ -156,6 +156,55 @@ class VideoController extends Controller
     }
 
     /**
+     * Dedicated SEO category landing page.
+     */
+    public function category(Request $request, string $slug)
+    {
+        if (!isset(ScrapedVideo::$categoryDefinitions[$slug])) {
+            return redirect()->route('home');
+        }
+
+        $request->merge(['category' => $slug]);
+        return $this->index($request);
+    }
+
+    /**
+     * Jump to a random video for instant discovery.
+     */
+    public function random()
+    {
+        $activeUrls = $this->getActiveTargetUrls();
+        $query = ScrapedVideo::notFunny();
+        if (!empty($activeUrls) && !app()->runningUnitTests()) {
+            $query->whereIn('source_url', $activeUrls);
+        }
+        $video = $query->inRandomOrder()->first();
+
+        if (!$video) {
+            return redirect()->route('home');
+        }
+
+        return redirect()->route('videos.watch', $video->slug ?: $video->id);
+    }
+
+    /**
+     * Media RSS feed for search engines and content aggregators.
+     */
+    public function feed()
+    {
+        $activeUrls = $this->getActiveTargetUrls();
+        $query = ScrapedVideo::notFunny()->latest();
+        if (!empty($activeUrls) && !app()->runningUnitTests()) {
+            $query->whereIn('source_url', $activeUrls);
+        }
+        $videos = $query->take(50)->get();
+
+        return response()->view('feed', [
+            'videos' => $videos,
+        ])->header('Content-Type', 'application/rss+xml; charset=utf-8');
+    }
+
+    /**
      * Dedicated Watch Page with Native Full-Length Stream Playback.
      */
     public function watch(string $slug)

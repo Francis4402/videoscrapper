@@ -150,7 +150,17 @@
 
     <!-- Video Controls & Action Bar -->
     <div class="mt-4 flex flex-wrap items-center justify-between gap-3 p-4 rounded-xl bg-slate-900/80 border border-slate-800">
-        <div class="flex items-center gap-2">
+        <div class="flex flex-wrap items-center gap-2">
+            <button
+                type="button"
+                id="btn-watch-favorite"
+                onclick="toggleCurrentFavorite()"
+                class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1.5 transition"
+            >
+                <i id="fav-icon" class="fa-regular fa-heart text-rose-400"></i>
+                <span id="fav-text">Favorite</span>
+            </button>
+
             <button
                 type="button"
                 id="btn-theater"
@@ -158,17 +168,26 @@
                 class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1.5 transition"
             >
                 <i class="fa-solid fa-expand text-fuchsia-400"></i>
-                <span id="theater-text">Theater Mode</span>
+                <span id="theater-text">Theater</span>
             </button>
 
             <button
                 type="button"
-                onclick="copyWatchLink()"
+                onclick="openShareModal()"
                 class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1.5 transition"
             >
                 <i class="fa-solid fa-share-nodes text-indigo-400"></i>
-                <span id="copy-text">Share</span>
+                <span>Share &amp; Embed</span>
             </button>
+
+            <a
+                href="{{ route('videos.random') }}"
+                class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-fuchsia-600/30 to-pink-600/30 text-fuchsia-300 border border-fuchsia-500/40 hover:border-fuchsia-400 hover:text-white flex items-center gap-1.5 transition shadow-sm"
+                title="Watch another random video"
+            >
+                <i class="fa-solid fa-shuffle text-pink-400 text-xs"></i>
+                <span>Next Random</span>
+            </a>
 
             @if($video->video_url)
                 <a
@@ -355,14 +374,145 @@
         }
     }
 
+    // Share Modal
+    function openShareModal() {
+        const modal = document.getElementById('share-modal');
+        if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeShareModal() {
+        const modal = document.getElementById('share-modal');
+        if (modal) modal.classList.add('hidden');
+    }
+
     // Share link copy
     function copyWatchLink() {
         navigator.clipboard.writeText(window.location.href).then(() => {
-            const btn = document.getElementById('copy-text');
-            const original = btn.textContent;
-            btn.textContent = 'Copied!';
-            setTimeout(() => { btn.textContent = original; }, 2000);
+            const btn = document.getElementById('copy-share-btn');
+            if (btn) {
+                const orig = btn.innerText;
+                btn.innerText = 'Copied!';
+                setTimeout(() => { btn.innerText = orig; }, 2000);
+            }
         });
     }
+
+    // Embed code copy
+    function copyEmbedCode() {
+        const embedText = document.getElementById('embed-code-text');
+        if (embedText) {
+            navigator.clipboard.writeText(embedText.value).then(() => {
+                const btn = document.getElementById('copy-embed-btn');
+                if (btn) {
+                    const orig = btn.innerText;
+                    btn.innerText = 'Copied!';
+                    setTimeout(() => { btn.innerText = orig; }, 2000);
+                }
+            });
+        }
+    }
+
+    // Watch Page Favorite Toggle
+    const currentVideo = {
+        id: "{{ $video->id }}",
+        slug: "{{ $video->slug }}",
+        title: {!! json_encode($video->clean_title) !!},
+        thumb: "{{ $video->thumbnail_url }}",
+        duration: "{{ $video->duration }}",
+        url: "{{ route('videos.watch', $video->slug ?: $video->id) }}"
+    };
+
+    function updateWatchFavoriteBtn() {
+        const favs = getFavorites();
+        const isFav = favs.some(f => f.id === currentVideo.id);
+        const icon = document.getElementById('fav-icon');
+        const text = document.getElementById('fav-text');
+        const btn = document.getElementById('btn-watch-favorite');
+        if (!icon || !text || !btn) return;
+
+        if (isFav) {
+            icon.className = 'fa-solid fa-heart text-rose-500';
+            text.innerText = 'Saved';
+            btn.classList.add('border-rose-500/40', 'bg-rose-950/30', 'text-rose-200');
+        } else {
+            icon.className = 'fa-regular fa-heart text-rose-400';
+            text.innerText = 'Favorite';
+            btn.classList.remove('border-rose-500/40', 'bg-rose-950/30', 'text-rose-200');
+        }
+    }
+
+    function toggleCurrentFavorite() {
+        let favs = getFavorites();
+        const idx = favs.findIndex(f => f.id === currentVideo.id);
+        if (idx >= 0) {
+            favs.splice(idx, 1);
+        } else {
+            favs.unshift(currentVideo);
+        }
+        saveFavorites(favs);
+        updateWatchFavoriteBtn();
+    }
+
+    document.addEventListener('DOMContentLoaded', updateWatchFavoriteBtn);
+</script>
+
+<!-- Share & Embed Modal -->
+<div id="share-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+    <div class="relative w-full max-w-lg bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden p-6 space-y-5">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <h3 class="text-base font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-share-nodes text-fuchsia-400"></i> Share &amp; Embed Video
+            </h3>
+            <button type="button" onclick="closeShareModal()" class="text-slate-400 hover:text-white text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <!-- Direct Link -->
+        <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Direct Page Link</label>
+            <div class="flex items-center gap-2">
+                <input type="text" readonly value="{{ route('videos.watch', $video->slug ?: $video->id) }}" class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 select-all outline-none">
+                <button type="button" id="copy-share-btn" onclick="copyWatchLink()" class="px-4 py-2 bg-gradient-to-r from-fuchsia-600 to-indigo-600 text-white rounded-xl text-xs font-bold shrink-0 hover:opacity-90 transition">
+                    Copy
+                </button>
+            </div>
+        </div>
+
+        <!-- Social Share Buttons -->
+        <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Share on Social &amp; Communities</label>
+            <div class="grid grid-cols-4 gap-2">
+                <a href="https://t.me/share/url?url={{ urlencode(route('videos.watch', $video->slug ?: $video->id)) }}&text={{ urlencode($video->clean_title) }}" target="_blank" rel="noopener" class="p-2.5 rounded-xl bg-[#229ED9]/15 border border-[#229ED9]/30 text-[#229ED9] hover:bg-[#229ED9]/30 flex flex-col items-center gap-1 transition text-center">
+                    <i class="fa-brands fa-telegram text-base"></i>
+                    <span class="text-[10px] font-semibold">Telegram</span>
+                </a>
+                <a href="https://twitter.com/intent/tweet?text={{ urlencode($video->clean_title) }}&url={{ urlencode(route('videos.watch', $video->slug ?: $video->id)) }}" target="_blank" rel="noopener" class="p-2.5 rounded-xl bg-sky-500/15 border border-sky-500/30 text-sky-400 hover:bg-sky-500/30 flex flex-col items-center gap-1 transition text-center">
+                    <i class="fa-brands fa-x-twitter text-base"></i>
+                    <span class="text-[10px] font-semibold">Twitter / X</span>
+                </a>
+                <a href="https://reddit.com/submit?url={{ urlencode(route('videos.watch', $video->slug ?: $video->id)) }}&title={{ urlencode($video->clean_title) }}" target="_blank" rel="noopener" class="p-2.5 rounded-xl bg-[#FF4500]/15 border border-[#FF4500]/30 text-[#FF4500] hover:bg-[#FF4500]/30 flex flex-col items-center gap-1 transition text-center">
+                    <i class="fa-brands fa-reddit-alien text-base"></i>
+                    <span class="text-[10px] font-semibold">Reddit</span>
+                </a>
+                <a href="https://api.whatsapp.com/send?text={{ urlencode($video->clean_title . ' ' . route('videos.watch', $video->slug ?: $video->id)) }}" target="_blank" rel="noopener" class="p-2.5 rounded-xl bg-[#25D366]/15 border border-[#25D366]/30 text-[#25D366] hover:bg-[#25D366]/30 flex flex-col items-center gap-1 transition text-center">
+                    <i class="fa-brands fa-whatsapp text-base"></i>
+                    <span class="text-[10px] font-semibold">WhatsApp</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- iFrame Embed Code -->
+        <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Embed on Website / Blog</label>
+            <div class="flex items-center gap-2">
+                <input id="embed-code-text" type="text" readonly value='&lt;iframe src="{{ route('videos.embed', $video->slug ?: $video->id) }}" width="100%" height="450" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;' class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-400 font-mono select-all outline-none">
+                <button type="button" id="copy-embed-btn" onclick="copyEmbedCode()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl text-xs font-semibold shrink-0 transition">
+                    Copy Code
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 </script>
 @endpush
