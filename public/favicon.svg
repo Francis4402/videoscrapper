@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#15082A"/>
+      <stop offset="50%" stop-color="#0B0F19"/>
+      <stop offset="100%" stop-color="#1B0C33"/>
+    </linearGradient>
+    <linearGradient id="neonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF1493"/>
+      <stop offset="35%" stop-color="#F43F5E"/>
+      <stop offset="70%" stop-color="#C026D3"/>
+      <stop offset="100%" stop-color="#6366F1"/>
+    </linearGradient>
+    <linearGradient id="glowBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF2E93"/>
+      <stop offset="50%" stop-color="#A855F7"/>
+      <stop offset="100%" stop-color="#4F46E5"/>
+    </linearGradient>
+    <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Squircle Base -->
+  <rect x="24" y="24" width="464" height="464" rx="120" fill="url(#bgGrad)" stroke="url(#glowBorder)" stroke-width="16" />
+
+  <!-- Ambient Glow -->
+  <circle cx="256" cy="256" r="140" fill="#FF1493" opacity="0.16" filter="url(#neonGlow)"/>
+
+  <!-- Left Pillar of "H" -->
+  <rect x="124" y="112" width="76" height="288" rx="28" fill="url(#neonGrad)"/>
+
+  <!-- Right Pillar of "H" -->
+  <rect x="312" y="112" width="76" height="288" rx="28" fill="url(#neonGrad)"/>
+
+  <!-- Play Symbol / Dynamic Crossbar -->
+  <polygon points="186,188 334,256 186,324" fill="#FFFFFF" filter="url(#neonGlow)"/>
+  <polygon points="196,204 312,256 196,308" fill="url(#neonGrad)"/>
+
+  <!-- Hot Pink Accent Sparkle -->
+  <circle cx="360" cy="144" r="12" fill="#FF2E93"/>
+</svg>
