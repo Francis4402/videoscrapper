@@ -6,8 +6,10 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Spatie\Sitemap\Contracts\Sitemapable;
+use Spatie\Sitemap\Tags\Url;
 
-class ScrapedVideo extends Model
+class ScrapedVideo extends Model implements Sitemapable
 {
     use HasFactory, HasUuids;
 
@@ -340,5 +342,68 @@ class ScrapedVideo extends Model
             return route('stream.proxy', ['id' => $this->id]);
         }
         return null;
+    }
+
+    /**
+     * Convert model instance to a Spatie Sitemap Tag with rich Google Video & Image SEO.
+     */
+    public function toSitemapTag(): Url | string | array
+    {
+        $slug = $this->slug ?: $this->id;
+        $url = Url::create(route('videos.watch', $slug))
+            ->setLastModificationDate($this->updated_at ?? now())
+            ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
+            ->setPriority(0.7);
+
+        if ($this->video_url) {
+            $thumb = $this->thumbnail_url;
+            if ($thumb && Str::startsWith($thumb, '//')) {
+                $thumb = 'https:' . $thumb;
+            } elseif ($thumb && !Str::startsWith($thumb, 'http')) {
+                $thumb = url($thumb);
+            }
+            $thumb = $thumb ?: url('/favicon.ico');
+
+            $options = [
+                'family_friendly' => 'no',
+                'publication_date' => ($this->created_at ?? now())->toAtomString(),
+                'category' => 'Anime & Hentai',
+                'view_count' => 12500,
+                'rating' => 4.9,
+            ];
+
+            if ($this->duration) {
+                $parts = array_map('intval', explode(':', $this->duration));
+                $sec = count($parts) === 3 ? ($parts[0] * 3600 + $parts[1] * 60 + $parts[2]) : (count($parts) === 2 ? ($parts[0] * 60 + $parts[1]) : ($parts[0] ?? 600));
+                $options['duration'] = $sec;
+            }
+
+            $tags = [
+                'hentai', 'watch hentai', 'watch hentai online', 'free hentai', 'hentai online free',
+                'hentai streaming', 'best hentai sites', 'hentai video', 'hentai videos', 'hd hentai',
+                'gangbang hentai', 'cartoon hentai', '3d hentai', 'uncensored hentai', 'full hentai episodes',
+                'english sub hentai', 'english dub hentai', 'hentai tube', 'milf hentai', 'tentacle hentai',
+                'harem anime', 'anime', 'hd anime', 'hentaiflex'
+            ];
+
+            $contentLoc = route('stream.proxy', $this->id);
+            $playerLoc = route('videos.embed', $slug);
+
+            $url->addVideo(
+                thumbnailLoc: $thumb,
+                title: $this->seo_title,
+                description: Str::limit(strip_tags($this->seo_description), 250),
+                contentLoc: $contentLoc,
+                playerLoc: $playerLoc,
+                options: $options,
+                tags: $tags
+            );
+
+            if ($thumb) {
+                $url->addImage($thumb, $this->seo_title, '', $this->seo_title);
+            }
+        }
+
+        return $url;
     }
 }

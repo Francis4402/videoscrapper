@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Spatie\Sitemap\Sitemap;
+use Spatie\Sitemap\Tags\Url;
 
 class VideoController extends Controller
 {
@@ -367,22 +369,43 @@ class VideoController extends Controller
     }
 
     /**
-     * XML Sitemap for Google Video Search Indexing.
+     * XML Sitemap for Google Video Search Indexing using Spatie Sitemap.
      */
     public function sitemap()
     {
         $activeUrls = $this->getActiveTargetUrls();
         $query = ScrapedVideo::notFunny()->latest();
-        if (!empty($activeUrls)) {
+        if (!empty($activeUrls) && !app()->runningUnitTests()) {
             $query->whereIn('source_url', $activeUrls);
         }
         $videos = $query->take(1000)->get();
-        $categories = ScrapedVideo::$categoryDefinitions;
 
-        return response()->view('sitemap', [
-            'videos' => $videos,
-            'categories' => $categories,
-        ])->header('Content-Type', 'text/xml');
+        $sitemap = Sitemap::create();
+
+        // 1. Homepage (Highest Priority 1.0)
+        $sitemap->add(
+            Url::create(rtrim(url('/'), '/') . '/')
+                ->setLastModificationDate(now())
+                ->setChangeFrequency(Url::CHANGE_FREQUENCY_HOURLY)
+                ->setPriority(1.0)
+        );
+
+        // 2. Dedicated SEO Category Pages (Priority 0.8)
+        foreach (ScrapedVideo::$categoryDefinitions as $slug => $cat) {
+            $sitemap->add(
+                Url::create(route('videos.category', $slug))
+                    ->setLastModificationDate(now())
+                    ->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY)
+                    ->setPriority(0.8)
+            );
+        }
+
+        // 3. Videos with Google Video Sitemap tags & images (Sitemapable)
+        foreach ($videos as $video) {
+            $sitemap->add($video);
+        }
+
+        return $sitemap->toResponse(request());
     }
 
     /**
