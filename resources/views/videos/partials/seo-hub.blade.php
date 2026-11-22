@@ -27,7 +27,7 @@
                 <p class="text-xs text-slate-400 leading-relaxed">
                     Experience thrilling group and harem anime series. Our gangbang hentai collection features multi-character storylines, uncensored encounters, and high-intensity episodes updated daily with direct fast playback.
                 </p>
-                <a href="{{ route('home', ['category' => 'gangbang']) }}" class="mt-3 inline-flex items-center gap-1.5 text-xs text-fuchsia-400 hover:text-fuchsia-300 font-semibold">
+                <a href="{{ route('videos.category', 'gangbang') }}" class="mt-3 inline-flex items-center gap-1.5 text-xs text-fuchsia-400 hover:text-fuchsia-300 font-semibold">
                     Browse Gangbang Hentai <i class="fa-solid fa-arrow-right text-[10px]"></i>
                 </a>
             </div>
@@ -41,7 +41,7 @@
                 <p class="text-xs text-slate-400 leading-relaxed">
                     Explore hand-drawn cartoon hentai, animated western toons, comic parodies, and expressive 2D adult animations in full 1080p high definition streaming with zero lag.
                 </p>
-                <a href="{{ route('home', ['category' => 'cartoon']) }}" class="mt-3 inline-flex items-center gap-1.5 text-pink-400 hover:text-pink-300 font-semibold">
+                <a href="{{ route('videos.category', 'cartoon') }}" class="mt-3 inline-flex items-center gap-1.5 text-pink-400 hover:text-pink-300 font-semibold">
                     Browse Cartoon Hentai <i class="fa-solid fa-arrow-right text-[10px]"></i>
                 </a>
             </div>
@@ -55,7 +55,7 @@
                 <p class="text-xs text-slate-400 leading-relaxed">
                     Immerse yourself in top-tier SFM, Blender, and CGI animations. Watch crystal-clear uncensored hentai with fluid 60FPS motion, decensored video releases, and crisp audio.
                 </p>
-                <a href="{{ route('home', ['category' => '3d']) }}" class="mt-3 inline-flex items-center gap-1.5 text-indigo-400 hover:text-indigo-300 font-semibold">
+                <a href="{{ route('videos.category', '3d') }}" class="mt-3 inline-flex items-center gap-1.5 text-indigo-400 hover:text-indigo-300 font-semibold">
                     Browse 3D Hentai <i class="fa-solid fa-arrow-right text-[10px]"></i>
                 </a>
             </div>

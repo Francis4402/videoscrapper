@@ -12,7 +12,7 @@
         $catName = $categories[$currentCategory]['name'];
         $seoTitle = "{$catName} Videos - Watch Free HD {$catName} Online{$pageSuffix} | HentaiFlex";
         $seoDesc = "Stream the best {$catName} full-length videos and anime series in high definition on HentaiFlex. Fast playback, no lag, mobile-friendly free streaming." . ($pageSuffix ? " (Browse page {$page})" : "");
-        $seoCanonical = route('home', array_filter(['category' => $currentCategory, 'page' => ($page > 1 ? $page : null)]));
+        $seoCanonical = route('videos.category', $currentCategory) . ($page > 1 ? '?page=' . $page : '');
     } elseif (request('q')) {
         $q = e(request('q'));
         $seoTitle = "{$q} Hentai Videos - Free HD Streaming{$pageSuffix} | HentaiFlex";
