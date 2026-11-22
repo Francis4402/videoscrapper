@@ -16,7 +16,7 @@ class SeoOptimizationTest extends TestCase
         $response->assertStatus(200);
 
         // First keyword in title and H1 is 'Hentai'
-        $response->assertSee('<title>Hentai: Watch Free HD Hentai Videos &amp; Anime Online | HentaiFlex</title>', false);
+        $response->assertSee('<title>Hentai: Watch Free HD Videos &amp; Anime Online | HentaiFlex</title>', false);
         $response->assertSee('Hentai - Watch Free HD Videos & Anime', false);
 
         // Core target keywords

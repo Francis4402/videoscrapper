@@ -4,8 +4,8 @@
     $page = (int) request('page', 1);
     $pageSuffix = ($page > 1) ? " - Page {$page}" : "";
 
-    $seoTitle = 'Hentai: Watch Free HD Hentai Videos & Anime Online | HentaiFlex' . $pageSuffix;
-    $seoDesc = 'Watch free HD hentai, gangbang hentai, cartoon hentai, and 3D uncensored anime videos online on HentaiFlex. Stream thousands of full-length episodes with zero buffering.' . ($pageSuffix ? " (Browse page {$page})" : "");
+    $seoTitle = 'Hentai: Watch Free HD Videos & Anime Online | HentaiFlex' . $pageSuffix;
+    $seoDesc = 'Watch free HD hentai, gangbang, cartoon, and 3D uncensored anime videos on HentaiFlex. Stream thousands of full-length episodes with zero buffering.' . ($pageSuffix ? " (Browse page {$page})" : "");
     $seoCanonical = route('home');
 
     if ($currentCategory && isset($categories[$currentCategory])) {

@@ -1,7 +1,7 @@
 <!-- Video Card Component -->
 <div class="group relative rounded-2xl bg-slate-900/80 border border-slate-800 overflow-hidden card-glow transition duration-300 flex flex-col">
     <!-- Thumbnail container with Centered Play Button on hover -->
-    <a href="{{ route('videos.watch', $video->slug ?: $video->id) }}" class="relative aspect-video w-full overflow-hidden bg-slate-950 block">
+    <a href="{{ route('videos.watch', $video->slug ?: $video->id) }}" aria-label="{{ $video->title }}" class="relative aspect-video w-full overflow-hidden bg-slate-950 block">
         @if($video->thumbnail_url)
             <img
                 src="{{ $video->thumbnail_url }}"
@@ -41,7 +41,7 @@
             <div class="flex flex-wrap items-center gap-1.5 mb-2">
                 @foreach(array_slice($video->categories, 0, 2) as $cardCat)
                     <a
-                        href="{{ route('home', ['category' => $cardCat['slug']]) }}"
+                        href="{{ route('videos.category', $cardCat['slug']) }}"
                         class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-800/90 hover:bg-fuchsia-950/60 text-slate-300 hover:text-fuchsia-300 border border-slate-700/60 hover:border-fuchsia-700/50 transition"
                     >
                         <i class="{{ $cardCat['icon'] }} text-[9px] text-fuchsia-400"></i>

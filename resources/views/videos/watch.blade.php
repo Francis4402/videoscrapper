@@ -218,7 +218,7 @@
             <div class="flex flex-wrap items-center gap-2">
                 @foreach($video->categories as $vcat)
                     <a
-                        href="{{ route('home', ['category' => $vcat['slug']]) }}"
+                        href="{{ route('videos.category', $vcat['slug']) }}"
                         class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-slate-800/80 hover:bg-fuchsia-950/60 text-slate-300 hover:text-fuchsia-300 border border-slate-700/80 hover:border-fuchsia-600/50 transition"
                     >
                         <i class="{{ $vcat['icon'] }} text-xs text-fuchsia-400"></i>

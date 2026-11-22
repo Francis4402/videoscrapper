@@ -55,6 +55,14 @@ class AntiScrapeProtection
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // Canonical 301 redirect www -> non-www to eliminate duplicate content
+        $host = $request->getHost();
+        if (str_starts_with(strtolower($host), 'www.')) {
+            $nonWwwHost = substr($host, 4);
+            $targetUrl = $request->getScheme() . '://' . $nonWwwHost . $request->getRequestUri();
+            return redirect()->to($targetUrl, 301);
+        }
+
         // 0. Whitelist public SEO discovery endpoints so search engine validators never fail
         if ($request->is('sitemap.xml') || $request->is('robots.txt') || $request->is('feed.xml') || $request->is('*indexnow*.txt')) {
             return $next($request);

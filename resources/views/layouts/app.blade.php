@@ -16,6 +16,9 @@
     <meta name="keywords" content="@yield('meta_keywords', 'watch hentai, free hentai, hentai online, hentai streaming, best hentai sites, watch hentai online free, uncensored hentai, gangbang hentai, cartoon hentai, 3d hentai, full hentai episodes, english sub hentai, hentai tube, hd anime, hentai videos, hentaiflex')">
     <link rel="canonical" href="@yield('canonical_url', url()->current())">
     <link rel="alternate" type="application/rss+xml" title="HentaiFlex Video Feed" href="{{ route('feed') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 
     <!-- Open Graph / Social Sharing -->

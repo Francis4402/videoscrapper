@@ -104,4 +104,17 @@ class AntiScrapeProtectionTest extends TestCase
 
         $this->assertEquals(200, $response->getStatusCode());
     }
+
+    public function test_redirects_www_to_non_www_permanently(): void
+    {
+        $request = Request::create('https://www.hentaiflex.com/category/3d', 'GET');
+        $request->headers->set('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)');
+
+        $response = $this->middleware->handle($request, function () {
+            return new Response('OK');
+        });
+
+        $this->assertEquals(301, $response->getStatusCode());
+        $this->assertEquals('https://hentaiflex.com/category/3d', $response->headers->get('Location'));
+    }
 }

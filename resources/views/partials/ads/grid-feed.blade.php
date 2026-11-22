@@ -43,9 +43,9 @@
                             <span class="text-[10px] font-bold uppercase tracking-wider text-fuchsia-400">Featured Partner</span>
                             <span class="text-[10px] text-amber-400"><i class="fa-solid fa-star"></i> 4.9/5</span>
                         </div>
-                        <h4 class="text-xs font-black text-white group-hover:text-fuchsia-300 transition line-clamp-1">
+                        <div class="text-xs font-black text-white group-hover:text-fuchsia-300 transition line-clamp-1">
                             3D Uncensored Hentai RPG
-                        </h4>
+                        </div>
                         <p class="text-[11px] text-slate-400 mt-1 line-clamp-2 leading-relaxed">
                             Play interactive full-length anime RPG in your browser with uncensored animations.
                         </p>
