@@ -386,20 +386,15 @@ class ScrapedVideo extends Model implements Sitemapable
                 'harem anime', 'anime', 'hd anime', 'hentaiflex'
             ];
 
-            // Google requires video:content_loc to be a direct media file URL.
-            // The stream-proxy route is a play page, so using it here triggers
-            // "Video location URL appears to be a play page URL" in Search Console.
-            $contentLoc = $this->video_url;
-            if (str_starts_with($contentLoc, '//')) {
-                $contentLoc = 'https:' . $contentLoc;
-            }
+            // Google Video SEO: Use dedicated embed player URL for player_loc.
+            // Omit content_loc so Googlebot uses player_loc and never complains about raw byte downloads or play page mismatches.
             $playerLoc = route('videos.embed', $slug);
 
             $url->addVideo(
                 thumbnailLoc: $thumb,
                 title: $this->seo_title,
                 description: Str::limit(strip_tags($this->seo_description), 250),
-                contentLoc: $contentLoc,
+                contentLoc: null,
                 playerLoc: $playerLoc,
                 options: $options,
                 tags: $tags
