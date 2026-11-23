@@ -58,7 +58,7 @@ class GenerateSitemapCommand extends Command
             $sitemap->add($video);
         }
 
-        $outputPath = public_path('sitmap.xml');
+        $outputPath = public_path('sitemap.xml');
         $sitemap->writeToFile($outputPath);
 
         $this->info("Dynamic sitemap successfully written to {$outputPath}");
