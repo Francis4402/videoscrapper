@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [VideoController::class, 'index'])->name('home');
 Route::get('/category/{slug}', [VideoController::class, 'category'])->name('videos.category');
 Route::get('/random', [VideoController::class, 'random'])->name('videos.random');
+Route::get('/sitemap.xml', [VideoController::class, 'sitemap'])->name('sitemap.canonical');
 Route::get('/sitmap.xml', [VideoController::class, 'sitemap'])->name('sitemap');
 Route::get('/feed.xml', [VideoController::class, 'feed'])->name('feed');
 Route::get('/hentaiflex-indexnow.txt', fn() => response("hentaiflex-indexnow\nhttps://hentaiflex.com/hentaiflex-indexnow.txt", 200, ['Content-Type' => 'text/plain']));

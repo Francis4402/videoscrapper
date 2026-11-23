@@ -92,6 +92,7 @@ Disallow: /clear-all
 Disallow: /*?*q=
 Crawl-delay: 5
 
+Sitemap: https://hentaiflex.com/sitemap.xml
 Sitemap: https://hentaiflex.com/sitmap.xml
 # Video RSS Feed: https://hentaiflex.com/feed.xml
 # IndexNow Key: https://hentaiflex.com/hentaiflex-indexnow.txt
