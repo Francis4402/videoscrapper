@@ -59,7 +59,7 @@ class SeoOptimizationTest extends TestCase
             'duration' => '15:30',
         ]);
 
-        $response = $this->get('/sitemap.xml');
+        $response = $this->get('/sitmap.xml');
         $response->assertStatus(200);
         $response->assertSee('<video:tag>hentai</video:tag>', false);
         $response->assertSee('<video:tag>watch hentai</video:tag>', false);

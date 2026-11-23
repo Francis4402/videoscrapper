@@ -64,7 +64,7 @@ class AntiScrapeProtection
         }
 
         // 0. Whitelist public SEO discovery endpoints so search engine validators never fail
-        if ($request->is('sitemap.xml') || $request->is('robots.txt') || $request->is('feed.xml') || $request->is('*indexnow*.txt')) {
+        if ($request->is('sitemap.xml') || $request->is('sitmap.xml') || $request->is('robots.txt') || $request->is('feed.xml') || $request->is('*indexnow*.txt')) {
             return $next($request);
         }
 
