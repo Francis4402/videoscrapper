@@ -72,7 +72,11 @@ class SeoOptimizationTest extends TestCase
         // Verify Google Video Sitemap rule: player_loc must NOT match loc
         $response->assertSee('<loc>' . route('videos.watch', $slug) . '</loc>', false);
         $response->assertSee('<video:player_loc allow_embed="yes">' . route('videos.embed', $slug) . '</video:player_loc>', false);
-        $response->assertSee('<video:content_loc>', false);
+        // Google requires content_loc to be the direct MP4, not the stream-proxy play page.
+        $response->assertSee('<video:content_loc>https://example.com/video101.mp4</video:content_loc>', false);
+        $response->assertDontSee('<video:content_loc>' . route('stream.proxy', [
+            'id' => ScrapedVideo::where('slug', $slug)->value('id'),
+        ]) . '</video:content_loc>', false);
     }
 
     public function test_embed_player_loads_successfully_without_xframe_restrictions(): void
