@@ -77,6 +77,11 @@ class SeoOptimizationTest extends TestCase
         $response->assertDontSee('<video:content_loc>' . route('stream.proxy', [
             'id' => ScrapedVideo::where('slug', $slug)->value('id'),
         ]) . '</video:content_loc>', false);
+
+        // Verify alternative sitemap route works identically
+        $resAlt = $this->get('/sitemap-video.xml');
+        $resAlt->assertStatus(200);
+        $resAlt->assertSee('<video:player_loc allow_embed="yes">' . route('videos.embed', $slug) . '</video:player_loc>', false);
     }
 
     public function test_embed_player_loads_successfully_without_xframe_restrictions(): void
