@@ -59,26 +59,13 @@
         </div>
 
         <!-- Card Footer -->
-        <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2">
+        <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center">
             <a
                 href="{{ route('videos.watch', $video->slug ?: $video->id) }}"
-                class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-fuchsia-600/20 to-indigo-600/20 hover:from-fuchsia-600 hover:to-indigo-600 text-fuchsia-300 hover:text-white font-semibold text-xs border border-fuchsia-500/30 hover:border-transparent transition"
+                class="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-fuchsia-600/20 to-indigo-600/20 hover:from-fuchsia-600 hover:to-indigo-600 text-fuchsia-300 hover:text-white font-semibold text-xs border border-fuchsia-500/30 hover:border-transparent transition"
             >
                 <i class="fa-solid fa-play text-[10px]"></i> Watch Video
             </a>
-
-            <!-- Delete single card button -->
-            <form action="{{ route('videos.destroy', $video->id) }}" method="POST" onsubmit="return confirm('Remove this video?');">
-                @csrf
-                @method('DELETE')
-                <button
-                    type="submit"
-                    title="Delete"
-                    class="p-2 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-950/40 transition"
-                >
-                    <i class="fa-solid fa-trash-can text-xs"></i>
-                </button>
-            </form>
         </div>
     </div>
 </div>

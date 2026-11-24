@@ -4,7 +4,10 @@
         $isEnabled = $slotConfig['enabled'] ?? true;
         $code = trim($slotConfig['code'] ?? '');
         $showPlaceholder = config('ads.show_placeholders', true);
-        $adUrl = $slotConfig['url'] ?? config('ads.onclick.url', 'https://syndication.exoclick.com/splash.php?idzone=default');
+        $adUrl = $slotConfig['url'] ?? config('ads.onclick.url', '');
+        $isScriptUrl = !empty($adUrl) && (str_contains($adUrl, 'splash.php') || str_ends_with($adUrl, '.js') || (str_contains($adUrl, 'exoclick.com') && str_contains($adUrl, 'idzone=')));
+        $bannerHref = ($isScriptUrl || empty($adUrl)) ? 'javascript:void(0)' : $adUrl;
+        $bannerTarget = ($isScriptUrl || empty($adUrl)) ? '_self' : '_blank';
     @endphp
 
     @if($isEnabled)
@@ -19,7 +22,7 @@
             <!-- High-Converting In-Feed Sponsored Video Card -->
             <div class="group relative rounded-2xl bg-gradient-to-br from-slate-900 via-purple-950/40 to-slate-900 border border-fuchsia-500/40 overflow-hidden card-glow transition duration-300 flex flex-col justify-between shadow-xl">
                 <!-- Thumbnail Area -->
-                <a href="{{ $adUrl }}" target="_blank" rel="nofollow noopener noreferrer" class="block relative aspect-video w-full overflow-hidden bg-slate-950">
+                <a href="{{ $bannerHref }}" target="{{ $bannerTarget }}" rel="nofollow noopener noreferrer" class="play-trigger block relative aspect-video w-full overflow-hidden bg-slate-950">
                     <div class="absolute inset-0 bg-gradient-to-tr from-fuchsia-950/80 via-purple-900/40 to-indigo-950/80 flex flex-col items-center justify-center p-4 text-center">
                         <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wider bg-fuchsia-600 text-white shadow">
                             <i class="fa-solid fa-fire mr-1 text-amber-300"></i> Sponsored
@@ -51,7 +54,7 @@
                         </p>
                     </div>
 
-                    <a href="{{ $adUrl }}" target="_blank" rel="nofollow noopener noreferrer" class="mt-4 block w-full py-2.5 rounded-xl text-center text-xs font-extrabold uppercase tracking-wider bg-gradient-to-r from-fuchsia-600 to-indigo-600 group-hover:from-fuchsia-500 group-hover:to-indigo-500 text-white shadow-lg shadow-fuchsia-600/30 transition">
+                    <a href="{{ $bannerHref }}" target="{{ $bannerTarget }}" rel="nofollow noopener noreferrer" class="play-trigger mt-4 block w-full py-2.5 rounded-xl text-center text-xs font-extrabold uppercase tracking-wider bg-gradient-to-r from-fuchsia-600 to-indigo-600 group-hover:from-fuchsia-500 group-hover:to-indigo-500 text-white shadow-lg shadow-fuchsia-600/30 transition">
                         Play Game Now <i class="fa-solid fa-arrow-up-right-from-square text-[10px] ml-1"></i>
                     </a>
                 </div>

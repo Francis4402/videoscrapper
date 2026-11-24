@@ -115,10 +115,13 @@
             @endif
 
             <!-- CENTER COVER OVERLAY: Thumbnail Image & Centered Play Button -->
-            <div
+            <a
                 id="player-cover"
+                href="javascript:void(0)"
+                role="button"
+                aria-label="Play video"
                 onclick="startPlayback()"
-                class="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black cursor-pointer group/cover transition-all duration-300 select-none"
+                class="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black cursor-pointer group/cover transition-all duration-300 select-none play-trigger"
             >
                 <!-- Thumbnail Backdrop -->
                 @if($video->thumbnail_url)
@@ -143,7 +146,7 @@
                         Click to Watch Full Video
                     </span>
                 </div>
-            </div>
+            </a>
 
         </div>
     </div>
@@ -151,16 +154,6 @@
     <!-- Video Controls & Action Bar -->
     <div class="mt-4 flex flex-wrap items-center justify-between gap-3 p-4 rounded-xl bg-slate-900/80 border border-slate-800">
         <div class="flex flex-wrap items-center gap-2">
-            <button
-                type="button"
-                id="btn-watch-favorite"
-                onclick="toggleCurrentFavorite()"
-                class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1.5 transition"
-            >
-                <i id="fav-icon" class="fa-regular fa-heart text-rose-400"></i>
-                <span id="fav-text">Favorite</span>
-            </button>
-
             <button
                 type="button"
                 id="btn-theater"
@@ -324,8 +317,8 @@
     });
 
     // Start playback when centered cover or play button is clicked
-    function startPlayback() {
-        // 1. Immediately trigger popup ad on trusted user click gesture
+    function startPlayback(event) {
+        // 1. Trigger configured popup ad handler
         if (typeof window.triggerOnClickAd === 'function') {
             window.triggerOnClickAd('video_play');
         }
@@ -333,12 +326,12 @@
         const cover = document.getElementById('player-cover');
         const video = document.getElementById('video-player');
 
-        // 2. Instantly disable pointer events and hide cover overlay
+        // 2. Hide cover overlay cleanly after giving click listeners time to capture event
         if (cover) {
-            cover.style.pointerEvents = 'none';
             cover.style.opacity = '0';
             setTimeout(() => {
                 cover.style.display = 'none';
+                cover.style.pointerEvents = 'none';
             }, 300);
         }
 
@@ -411,49 +404,6 @@
             });
         }
     }
-
-    // Watch Page Favorite Toggle
-    const currentVideo = {
-        id: "{{ $video->id }}",
-        slug: "{{ $video->slug }}",
-        title: {!! json_encode($video->clean_title) !!},
-        thumb: "{{ $video->thumbnail_url }}",
-        duration: "{{ $video->duration }}",
-        url: "{{ route('videos.watch', $video->slug ?: $video->id) }}"
-    };
-
-    function updateWatchFavoriteBtn() {
-        const favs = getFavorites();
-        const isFav = favs.some(f => f.id === currentVideo.id);
-        const icon = document.getElementById('fav-icon');
-        const text = document.getElementById('fav-text');
-        const btn = document.getElementById('btn-watch-favorite');
-        if (!icon || !text || !btn) return;
-
-        if (isFav) {
-            icon.className = 'fa-solid fa-heart text-rose-500';
-            text.innerText = 'Saved';
-            btn.classList.add('border-rose-500/40', 'bg-rose-950/30', 'text-rose-200');
-        } else {
-            icon.className = 'fa-regular fa-heart text-rose-400';
-            text.innerText = 'Favorite';
-            btn.classList.remove('border-rose-500/40', 'bg-rose-950/30', 'text-rose-200');
-        }
-    }
-
-    function toggleCurrentFavorite() {
-        let favs = getFavorites();
-        const idx = favs.findIndex(f => f.id === currentVideo.id);
-        if (idx >= 0) {
-            favs.splice(idx, 1);
-        } else {
-            favs.unshift(currentVideo);
-        }
-        saveFavorites(favs);
-        updateWatchFavoriteBtn();
-    }
-
-    document.addEventListener('DOMContentLoaded', updateWatchFavoriteBtn);
 </script>
 
 <!-- Share & Embed Modal -->

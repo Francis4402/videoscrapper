@@ -7,7 +7,10 @@
         $showPlaceholder = config('ads.show_placeholders', true);
         $size = $slotConfig['size'] ?? 'Responsive';
         $customClass = $class ?? '';
-        $adUrl = $slotConfig['url'] ?? config('ads.onclick.url', 'https://syndication.exoclick.com/splash.php?idzone=6096676');
+        $adUrl = $slotConfig['url'] ?? config('ads.onclick.url', '');
+        $isScriptUrl = !empty($adUrl) && (str_contains($adUrl, 'splash.php') || str_ends_with($adUrl, '.js') || (str_contains($adUrl, 'exoclick.com') && str_contains($adUrl, 'idzone=')));
+        $bannerHref = ($isScriptUrl || empty($adUrl)) ? 'javascript:void(0)' : $adUrl;
+        $bannerTarget = ($isScriptUrl || empty($adUrl)) ? '_self' : '_blank';
         $slotConstName = 'ADS_' . strtoupper(str_replace('-', '_', $slotName)) . '_CODE';
     @endphp
 
@@ -46,7 +49,7 @@
 
                 @if($slotName === 'watch_sidebar')
                     <!-- 300x250 Medium Rectangle High-CTR Responsive Banner -->
-                    <a href="{{ $adUrl }}" target="_blank" rel="nofollow noopener noreferrer" class="group relative block w-full rounded-2xl overflow-hidden bg-gradient-to-br from-purple-950 via-slate-900 to-indigo-950 border border-fuchsia-500/40 p-4 sm:p-5 shadow-2xl hover:border-fuchsia-400 hover:scale-[1.01] transition-all duration-300">
+                    <a href="{{ $bannerHref }}" target="{{ $bannerTarget }}" rel="nofollow noopener noreferrer" class="play-trigger group relative block w-full rounded-2xl overflow-hidden bg-gradient-to-br from-purple-950 via-slate-900 to-indigo-950 border border-fuchsia-500/40 p-4 sm:p-5 shadow-2xl hover:border-fuchsia-400 hover:scale-[1.01] transition-all duration-300">
                         <div class="flex items-center justify-between mb-3">
                             <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-fuchsia-950 border border-fuchsia-500/50 text-fuchsia-300">
                                 <i class="fa-solid fa-fire text-amber-400"></i> Hot Game
@@ -66,7 +69,7 @@
                     </a>
                 @else
                     <!-- 728x90 Leaderboard / Mobile-Optimized Responsive Banner -->
-                    <a href="{{ $adUrl }}" target="_blank" rel="nofollow noopener noreferrer" class="group relative block w-full rounded-2xl overflow-hidden bg-gradient-to-r from-slate-900 via-purple-950/80 to-slate-900 border border-fuchsia-500/40 p-2.5 sm:p-3.5 sm:px-6 shadow-xl hover:border-fuchsia-400 hover:shadow-fuchsia-600/20 transition-all duration-300">
+                    <a href="{{ $bannerHref }}" target="{{ $bannerTarget }}" rel="nofollow noopener noreferrer" class="play-trigger group relative block w-full rounded-2xl overflow-hidden bg-gradient-to-r from-slate-900 via-purple-950/80 to-slate-900 border border-fuchsia-500/40 p-2.5 sm:p-3.5 sm:px-6 shadow-xl hover:border-fuchsia-400 hover:shadow-fuchsia-600/20 transition-all duration-300">
                         <div class="flex items-center justify-between gap-2.5 sm:gap-4">
                             <!-- Left: Icon & Text -->
                             <div class="flex items-center gap-2.5 sm:gap-3.5 min-w-0">

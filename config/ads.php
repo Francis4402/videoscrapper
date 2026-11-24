@@ -29,7 +29,7 @@ return [
     */
     'onclick' => [
         'enabled'                => env('ADS_ONCLICK_ENABLED', true),
-        'url'                    => env('ADS_ONCLICK_URL', 'https://syndication.exoclick.com/splash.php?idzone=default'),
+        'url'                    => env('ADS_ONCLICK_URL', ''),
         'frequency_minutes'      => (int) env('ADS_ONCLICK_FREQUENCY_MINUTES', 3),
         'trigger_on_play'        => env('ADS_ONCLICK_ON_PLAY', true),
         'trigger_on_first_click' => env('ADS_ONCLICK_ON_FIRST_CLICK', true),
@@ -71,42 +71,42 @@ return [
             'enabled' => env('ADS_HEADER_ENABLED', true),
             'size'    => '728x90 / 320x50',
             'code'    => env('ADS_HEADER_CODE', ''),
-            'url'     => env('ADS_HEADER_URL', env('ADS_ONCLICK_URL', 'https://syndication.exoclick.com/splash.php?idzone=default')),
+            'url'     => env('ADS_HEADER_URL', env('ADS_ONCLICK_URL', '')),
         ],
 
         'watch_below_player' => [
             'enabled' => env('ADS_WATCH_BELOW_PLAYER_ENABLED', true),
             'size'    => '728x90 / 300x250',
             'code'    => env('ADS_WATCH_BELOW_PLAYER_CODE', ''),
-            'url'     => env('ADS_WATCH_BELOW_PLAYER_URL', env('ADS_ONCLICK_URL', 'https://syndication.exoclick.com/splash.php?idzone=default')),
+            'url'     => env('ADS_WATCH_BELOW_PLAYER_URL', env('ADS_ONCLICK_URL', '')),
         ],
 
         'watch_sidebar' => [
             'enabled' => env('ADS_WATCH_SIDEBAR_ENABLED', true),
             'size'    => '300x250',
             'code'    => env('ADS_WATCH_SIDEBAR_CODE', ''),
-            'url'     => env('ADS_WATCH_SIDEBAR_URL', env('ADS_ONCLICK_URL', 'https://syndication.exoclick.com/splash.php?idzone=default')),
+            'url'     => env('ADS_WATCH_SIDEBAR_URL', env('ADS_ONCLICK_URL', '')),
         ],
 
         'grid_feed' => [
             'enabled' => env('ADS_GRID_FEED_ENABLED', true),
             'size'    => 'Native / 300x250',
             'code'    => env('ADS_GRID_FEED_CODE', ''),
-            'url'     => env('ADS_GRID_FEED_URL', env('ADS_ONCLICK_URL', 'https://syndication.exoclick.com/splash.php?idzone=default')),
+            'url'     => env('ADS_GRID_FEED_URL', env('ADS_ONCLICK_URL', '')),
         ],
 
         'footer_sticky' => [
             'enabled' => env('ADS_FOOTER_STICKY_ENABLED', true),
             'size'    => '728x90 / 320x50',
             'code'    => env('ADS_FOOTER_STICKY_CODE', ''),
-            'url'     => env('ADS_FOOTER_STICKY_URL', env('ADS_ONCLICK_URL', 'https://syndication.exoclick.com/splash.php?idzone=default')),
+            'url'     => env('ADS_FOOTER_STICKY_URL', env('ADS_ONCLICK_URL', '')),
         ],
 
         'home_bottom' => [
             'enabled' => env('ADS_HOME_BOTTOM_ENABLED', true),
             'size'    => '728x90 / 320x50',
             'code'    => env('ADS_HOME_BOTTOM_CODE', ''),
-            'url'     => env('ADS_HOME_BOTTOM_URL', env('ADS_ONCLICK_URL', 'https://syndication.exoclick.com/splash.php?idzone=default')),
+            'url'     => env('ADS_HOME_BOTTOM_URL', env('ADS_ONCLICK_URL', '')),
         ],
     ],
 

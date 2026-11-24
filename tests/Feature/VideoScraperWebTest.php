@@ -22,7 +22,7 @@ class VideoScraperWebTest extends TestCase
 
     public function test_sitemap_xml_returns_valid_google_video_sitemap(): void
     {
-        $response = $this->get('/sitemap.xml');
+        $response = $this->get('/sitmap.xml');
 
         $response->assertStatus(200);
         $response->assertHeader('Content-Type', 'text/xml; charset=UTF-8');

@@ -162,12 +162,6 @@
                     <span>Random</span>
                 </a>
 
-                <button type="button" onclick="toggleFavoritesModal()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-700 transition flex items-center gap-1.5 border border-slate-700">
-                    <i class="fa-solid fa-heart text-xs text-rose-400"></i>
-                    <span class="hidden sm:inline">Favorites</span>
-                    <span id="fav-counter" class="hidden px-1.5 py-0.5 rounded-full text-[10px] bg-rose-500/30 text-rose-300 font-bold">0</span>
-                </button>
-
                 <a href="{{ route('home') }}" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition hidden md:flex items-center gap-1.5">
                     <i class="fa-solid fa-film text-xs text-fuchsia-400"></i>
                     <span>Browse</span>
@@ -262,6 +256,12 @@
 
             window.triggerOnClickAd = function(source) {
                 if (!adUrl) return;
+
+                // Protect against opening JavaScript script URLs in new tabs (which dumps raw code on screen)
+                if (adUrl.includes('splash.php') || adUrl.endsWith('.js') || (adUrl.includes('exoclick.com') && adUrl.includes('idzone='))) {
+                    return;
+                }
+
                 const now = Date.now();
 
                 // Video play click: Highest earning placement, triggers pop ad while video plays
@@ -314,122 +314,6 @@
         })();
     </script>
     @endif
-
-    <!-- Favorites Modal -->
-    <div id="favorites-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm transition-opacity">
-        <div class="relative w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
-            <div class="flex items-center justify-between p-4 border-b border-slate-800">
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-heart text-rose-500 text-lg"></i>
-                    <h3 class="text-base font-bold text-white">Your Saved Favorites</h3>
-                </div>
-                <button type="button" onclick="toggleFavoritesModal()" class="text-slate-400 hover:text-white text-lg p-1">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            <div id="favorites-list" class="p-4 overflow-y-auto flex-1 space-y-3">
-                <!-- Injected via JavaScript -->
-            </div>
-            <div class="p-3 bg-slate-950/60 border-t border-slate-800 flex justify-between items-center text-xs text-slate-400">
-                <span>Bookmarks saved privately in your browser</span>
-                <button type="button" onclick="clearAllFavorites()" class="text-rose-400 hover:text-rose-300">Clear All</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Favorites Engine (LocalStorage)
-        function getFavorites() {
-            try {
-                return JSON.parse(localStorage.getItem('hentaiflex_favorites') || '[]');
-            } catch (e) {
-                return [];
-            }
-        }
-
-        function saveFavorites(favs) {
-            localStorage.setItem('hentaiflex_favorites', JSON.stringify(favs));
-            updateFavCounter();
-        }
-
-        function updateFavCounter() {
-            const favs = getFavorites();
-            const counter = document.getElementById('fav-counter');
-            if (counter) {
-                if (favs.length > 0) {
-                    counter.innerText = favs.length;
-                    counter.classList.remove('hidden');
-                } else {
-                    counter.classList.add('hidden');
-                }
-            }
-        }
-
-        function toggleFavoritesModal() {
-            const modal = document.getElementById('favorites-modal');
-            if (!modal) return;
-            if (modal.classList.contains('hidden')) {
-                renderFavoritesList();
-                modal.classList.remove('hidden');
-            } else {
-                modal.classList.add('hidden');
-            }
-        }
-
-        function renderFavoritesList() {
-            const list = document.getElementById('favorites-list');
-            if (!list) return;
-            const favs = getFavorites();
-            if (favs.length === 0) {
-                list.innerHTML = `
-                    <div class="py-12 text-center text-slate-400">
-                        <i class="fa-regular fa-heart text-4xl mb-3 text-slate-600 block"></i>
-                        <p class="font-medium text-sm">No favorites saved yet.</p>
-                        <p class="text-xs text-slate-500 mt-1">Click the heart button on any video page to save it here for fast re-watching!</p>
-                    </div>
-                `;
-                return;
-            }
-
-            list.innerHTML = favs.map(f => `
-                <div class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-800/60 border border-slate-700/60 hover:border-fuchsia-500/40 transition group">
-                    <a href="${f.url}" class="relative w-24 h-16 rounded-lg overflow-hidden bg-slate-900 shrink-0">
-                        <img src="${f.thumb || '/favicon.ico'}" alt="${f.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                    </a>
-                    <div class="flex-1 min-w-0">
-                        <a href="${f.url}" class="font-semibold text-xs sm:text-sm text-white hover:text-fuchsia-400 truncate block transition">
-                            ${f.title}
-                        </a>
-                        <span class="text-[11px] text-slate-400 mt-0.5 block">${f.duration || 'Full Episode'}</span>
-                    </div>
-                    <button type="button" onclick="removeFavorite('${f.id}')" class="p-2 text-slate-400 hover:text-rose-400 transition" title="Remove">
-                        <i class="fa-solid fa-trash-can text-xs"></i>
-                    </button>
-                </div>
-            `).join('');
-        }
-
-        function removeFavorite(id) {
-            let favs = getFavorites().filter(f => f.id !== id);
-            saveFavorites(favs);
-            renderFavoritesList();
-            if (typeof updateWatchFavoriteBtn === 'function') {
-                updateWatchFavoriteBtn();
-            }
-        }
-
-        function clearAllFavorites() {
-            if (confirm('Clear all saved favorites?')) {
-                saveFavorites([]);
-                renderFavoritesList();
-                if (typeof updateWatchFavoriteBtn === 'function') {
-                    updateWatchFavoriteBtn();
-                }
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', updateFavCounter);
-    </script>
 
     @stack('scripts')
 

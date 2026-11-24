@@ -44,13 +44,13 @@
                 $thumb = url($thumb);
             }
         @endphp
-        <div id="player-cover" class="cover-overlay" style="background-image: url('{{ $thumb }}');" onclick="startPlayback()">
+        <a id="player-cover" href="javascript:void(0)" role="button" aria-label="Play video" class="cover-overlay play-trigger" style="background-image: url('{{ $thumb }}');" onclick="startPlayback()">
             <div class="play-btn">
                 <svg style="width: 32px; height: 32px; fill: white; margin-left: 4px;" viewBox="0 0 24 24">
                     <path d="M8 5v14l11-7z"/>
                 </svg>
             </div>
-        </div>
+        </a>
     </div>
 
     <script>

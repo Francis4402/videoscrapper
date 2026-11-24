@@ -4,7 +4,10 @@
         $isEnabled = $slotConfig['enabled'] ?? true;
         $code = trim($slotConfig['code'] ?? '');
         $showPlaceholder = config('ads.show_placeholders', true);
-        $adUrl = $slotConfig['url'] ?? config('ads.onclick.url', 'https://syndication.exoclick.com/splash.php?idzone=6096676');
+        $adUrl = $slotConfig['url'] ?? config('ads.onclick.url', '');
+        $isScriptUrl = !empty($adUrl) && (str_contains($adUrl, 'splash.php') || str_ends_with($adUrl, '.js') || (str_contains($adUrl, 'exoclick.com') && str_contains($adUrl, 'idzone=')));
+        $bannerHref = ($isScriptUrl || empty($adUrl)) ? 'javascript:void(0)' : $adUrl;
+        $bannerTarget = ($isScriptUrl || empty($adUrl)) ? '_self' : '_blank';
     @endphp
 
     @if($isEnabled && (!empty($code) || $showPlaceholder))
@@ -29,7 +32,7 @@
                         </div>
                     @else
                         <!-- Working Clickable Responsive Sticky Footer Banner -->
-                        <a href="{{ $adUrl }}" target="_blank" rel="nofollow noopener noreferrer" class="group flex items-center justify-between gap-2.5 sm:gap-4 w-full max-w-4xl px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-gradient-to-r from-purple-950/90 via-slate-900 to-indigo-950/90 border border-fuchsia-500/40 hover:border-fuchsia-400 shadow-lg transition">
+                        <a href="{{ $bannerHref }}" target="{{ $bannerTarget }}" rel="nofollow noopener noreferrer" class="play-trigger group flex items-center justify-between gap-2.5 sm:gap-4 w-full max-w-4xl px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-gradient-to-r from-purple-950/90 via-slate-900 to-indigo-950/90 border border-fuchsia-500/40 hover:border-fuchsia-400 shadow-lg transition">
                             <div class="flex items-center gap-2 sm:gap-3 min-w-0">
                                 <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-tr from-fuchsia-600 to-indigo-600 text-white flex items-center justify-center text-xs shadow group-hover:scale-110 transition-transform flex-shrink-0">
                                     <i class="fa-solid fa-gamepad"></i>
