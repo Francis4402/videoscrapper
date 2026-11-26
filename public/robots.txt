@@ -11,6 +11,7 @@ Allow: /stream-proxy/
 Disallow: /scrape
 Disallow: /scrape-configured
 Disallow: /clear-all
+Disallow: /*?*q=
 
 User-agent: Bingbot
 Allow: /

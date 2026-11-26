@@ -69,20 +69,21 @@ class VideoController extends Controller
                 }
             }
             Cache::forever($cacheKey, $currentHash);
-            Cache::forget('video_category_counts');
-        }
+            Cache::forget('video_category_counts_' . md5(json_encode($activeUrls)));
+            Cache::forget('sitemap_xml_' . md5(json_encode($activeUrls)));
 
-        // Clean up: delete any videos not in active .env target URLs, and delete all funny/meme/vlipsy videos
-        if (!empty($activeUrls)) {
-            ScrapedVideo::whereNotIn('source_url', $activeUrls)->delete();
+            // Clean up: delete any videos not in active .env target URLs, and delete all funny/meme/vlipsy videos
+            if (!empty($activeUrls)) {
+                ScrapedVideo::whereNotIn('source_url', $activeUrls)->delete();
+            }
+            ScrapedVideo::where(function ($q) {
+                $q->where('source_domain', 'like', '%vlipsy%')
+                  ->orWhere('title', 'like', '%funny%')
+                  ->orWhere('title', 'like', '%meme%')
+                  ->orWhere('title', 'like', '%laughing%')
+                  ->orWhere('title', 'like', '%lol montage%');
+            })->delete();
         }
-        ScrapedVideo::where(function ($q) {
-            $q->where('source_domain', 'like', '%vlipsy%')
-              ->orWhere('title', 'like', '%funny%')
-              ->orWhere('title', 'like', '%meme%')
-              ->orWhere('title', 'like', '%laughing%')
-              ->orWhere('title', 'like', '%lol montage%');
-        })->delete();
 
         $search = $request->query('q');
         $currentCategory = $request->query('category');
@@ -374,38 +375,50 @@ class VideoController extends Controller
     public function sitemap()
     {
         $activeUrls = $this->getActiveTargetUrls();
-        $query = ScrapedVideo::notFunny()->latest();
-        if (!empty($activeUrls) && !app()->runningUnitTests()) {
-            $query->whereIn('source_url', $activeUrls);
-        }
-        $videos = $query->take(1000)->get();
+        $cacheKey = 'sitemap_xml_' . md5(json_encode($activeUrls));
 
-        $sitemap = Sitemap::create();
+        $buildSitemapXml = function () use ($activeUrls) {
+            $query = ScrapedVideo::notFunny()->latest();
+            if (!empty($activeUrls) && !app()->runningUnitTests()) {
+                $query->whereIn('source_url', $activeUrls);
+            }
+            $videos = $query->take(1000)->get();
 
-        // 1. Homepage (Highest Priority 1.0)
-        $sitemap->add(
-            Url::create(rtrim(url('/'), '/') . '/')
-                ->setLastModificationDate(now())
-                ->setChangeFrequency(Url::CHANGE_FREQUENCY_HOURLY)
-                ->setPriority(1.0)
-        );
+            $sitemap = Sitemap::create();
 
-        // 2. Dedicated SEO Category Pages (Priority 0.8)
-        foreach (ScrapedVideo::$categoryDefinitions as $slug => $cat) {
+            // 1. Homepage (Highest Priority 1.0)
             $sitemap->add(
-                Url::create(route('videos.category', $slug))
+                Url::create(rtrim(url('/'), '/') . '/')
                     ->setLastModificationDate(now())
-                    ->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY)
-                    ->setPriority(0.8)
+                    ->setChangeFrequency(Url::CHANGE_FREQUENCY_HOURLY)
+                    ->setPriority(1.0)
             );
-        }
 
-        // 3. Videos with Google Video Sitemap tags & images (Sitemapable)
-        foreach ($videos as $video) {
-            $sitemap->add($video);
-        }
+            // 2. Dedicated SEO Category Pages (Priority 0.8)
+            foreach (ScrapedVideo::$categoryDefinitions as $slug => $cat) {
+                $sitemap->add(
+                    Url::create(route('videos.category', $slug))
+                        ->setLastModificationDate(now())
+                        ->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY)
+                        ->setPriority(0.8)
+                );
+            }
 
-        return $sitemap->toResponse(request());
+            // 3. Videos with Google Video Sitemap tags & images (Sitemapable)
+            foreach ($videos as $video) {
+                $sitemap->add($video);
+            }
+
+            return $sitemap->render();
+        };
+
+        $xml = app()->runningUnitTests()
+            ? $buildSitemapXml()
+            : Cache::remember($cacheKey, 3600, $buildSitemapXml);
+
+        return response($xml, 200, [
+            'Content-Type' => 'text/xml; charset=UTF-8',
+        ]);
     }
 
     /**
@@ -415,6 +428,7 @@ class VideoController extends Controller
     {
         ScrapedVideo::truncate();
         Cache::forget('synced_env_target_hash');
+        Cache::forget('sitemap_xml_' . md5(json_encode($this->getActiveTargetUrls())));
 
         return redirect()->route('home')->with('success', 'All video cards have been cleared.');
     }
