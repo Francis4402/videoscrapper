@@ -22,16 +22,29 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | In-Stream Video Ads (VAST Pre-Roll)
+    |--------------------------------------------------------------------------
+    | Plays a video advertisement before the actual video playback begins.
+    | Supports VAST 2.0 / 3.0 / 4.0 tags (e.g., ExoClick In-Stream Video).
+    */
+    'instream' => [
+        'enabled'     => env('ADS_INSTREAM_ENABLED', true),
+        'vast_url'    => env('ADS_INSTREAM_VAST_URL', 'https://s.magsrv.com/v1/vast.php?idz=6109862'),
+        'skip_offset' => (int) env('ADS_INSTREAM_SKIP_OFFSET', 5),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | On-Click / Popunder Engine (The #1 Profit Driver)
     |--------------------------------------------------------------------------
-    | Triggers an ad in a new tab when a user clicks anywhere on the page
-    | or clicks the big Play button on the video player.
+    | Triggers an ad in a new tab when a user clicks anywhere on the page.
+    | Video play button uses in-stream VAST ads; popunder triggers on page/card clicks.
     */
     'onclick' => [
         'enabled'                => env('ADS_ONCLICK_ENABLED', true),
         'url'                    => env('ADS_ONCLICK_URL', ''),
         'frequency_minutes'      => (int) env('ADS_ONCLICK_FREQUENCY_MINUTES', 3),
-        'trigger_on_play'        => env('ADS_ONCLICK_ON_PLAY', true),
+        'trigger_on_play'        => env('ADS_ONCLICK_ON_PLAY', false),
         'trigger_on_first_click' => env('ADS_ONCLICK_ON_FIRST_CLICK', true),
     ],
 

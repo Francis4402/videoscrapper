@@ -114,6 +114,37 @@
                 </video>
             @endif
 
+            <!-- IN-STREAM VAST VIDEO AD OVERLAY -->
+            <div id="instream-ad-overlay" class="absolute inset-0 z-20 hidden flex-col justify-between bg-black select-none">
+                <video id="instream-ad-video" playsinline class="w-full h-full object-contain bg-black cursor-pointer"></video>
+                
+                <!-- Top Ad Info Bar -->
+                <div class="absolute top-3 left-3 right-3 flex items-center justify-between z-30 pointer-events-none">
+                    <span class="px-3 py-1.5 rounded-lg bg-black/80 backdrop-blur-md text-xs font-semibold text-white/90 border border-white/10 flex items-center gap-2 shadow-lg">
+                        <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                        <span>Advertisement</span>
+                        <span id="instream-ad-duration" class="text-slate-400 font-mono text-[11px]"></span>
+                    </span>
+                    <a id="instream-ad-link" href="#" target="_blank" rel="noopener" class="pointer-events-auto px-3 py-1.5 rounded-lg bg-black/80 hover:bg-slate-800 backdrop-blur-md text-xs font-medium text-white/90 border border-white/10 flex items-center gap-1.5 transition shadow-lg">
+                        <span>Visit Advertiser</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-fuchsia-400"></i>
+                    </a>
+                </div>
+
+                <!-- Bottom Skip Button -->
+                <div class="absolute bottom-4 right-4 z-30 flex items-center gap-3">
+                    <button type="button" id="instream-ad-skip" disabled class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-2xl bg-black/80 backdrop-blur text-slate-400 border border-white/10 cursor-not-allowed">
+                        <span>Skip in</span>
+                        <span id="instream-ad-countdown">5</span>s
+                    </button>
+                </div>
+
+                <!-- Bottom Progress Bar -->
+                <div class="absolute bottom-0 left-0 right-0 h-1 bg-white/20 z-30">
+                    <div id="instream-ad-progress" class="h-full bg-gradient-to-r from-fuchsia-500 to-amber-400 w-0 transition-all duration-150"></div>
+                </div>
+            </div>
+
             <!-- CENTER COVER OVERLAY: Thumbnail Image & Centered Play Button -->
             <a
                 id="player-cover"
@@ -316,26 +347,29 @@
         }
     });
 
-    // Start playback when centered cover or play button is clicked
-    function startPlayback(event) {
-        // 1. Trigger configured popup ad handler
-        if (typeof window.triggerOnClickAd === 'function') {
-            window.triggerOnClickAd('video_play');
+    // In-stream VAST configuration
+    const instreamConfig = {
+        enabled: {{ (config('ads.enabled', true) && config('ads.instream.enabled', true) && !empty(config('ads.instream.vast_url'))) ? 'true' : 'false' }},
+        vastUrl: @json(config('ads.instream.vast_url', 'https://s.magsrv.com/v1/vast.php?idz=6109862')),
+        skipOffset: {{ (int) config('ads.instream.skip_offset', 5) }}
+    };
+
+    let adPlayed = false;
+
+    function playMainVideo() {
+        const adOverlay = document.getElementById('instream-ad-overlay');
+        const adVideo = document.getElementById('instream-ad-video');
+        if (adVideo) {
+            adVideo.pause();
+            adVideo.removeAttribute('src');
+            adVideo.load();
+        }
+        if (adOverlay) {
+            adOverlay.classList.add('hidden');
+            adOverlay.style.display = 'none';
         }
 
-        const cover = document.getElementById('player-cover');
         const video = document.getElementById('video-player');
-
-        // 2. Hide cover overlay cleanly after giving click listeners time to capture event
-        if (cover) {
-            cover.style.opacity = '0';
-            setTimeout(() => {
-                cover.style.display = 'none';
-                cover.style.pointerEvents = 'none';
-            }, 300);
-        }
-
-        // 3. Immediately start video stream playback
         if (video) {
             video.controls = true;
             if (!video.src && video.querySelector('source')) {
@@ -348,6 +382,215 @@
                 });
             }
         }
+    }
+
+    async function parseVastTag(url, depth = 0) {
+        if (depth > 4 || !url) return null;
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 4000);
+            const resp = await fetch(url, {
+                signal: controller.signal,
+                headers: { 'Accept': 'application/xml, text/xml, */*' }
+            });
+            clearTimeout(timeoutId);
+            if (!resp.ok) return null;
+            const xmlText = await resp.text();
+            const doc = new DOMParser().parseFromString(xmlText, 'text/xml');
+
+            const impressions = [];
+            const clickTrackings = [];
+
+            doc.querySelectorAll('Impression').forEach(el => {
+                const u = el.textContent.trim();
+                if (u) impressions.push(u);
+            });
+            doc.querySelectorAll('ClickTracking').forEach(el => {
+                const u = el.textContent.trim();
+                if (u) clickTrackings.push(u);
+            });
+
+            // Follow Wrapper if present
+            const wrapperTag = doc.querySelector('VASTAdTagURI');
+            if (wrapperTag && wrapperTag.textContent.trim()) {
+                const sub = await parseVastTag(wrapperTag.textContent.trim(), depth + 1);
+                if (sub) {
+                    return {
+                        ...sub,
+                        impressions: [...impressions, ...(sub.impressions || [])],
+                        clickTrackings: [...clickTrackings, ...(sub.clickTrackings || [])]
+                    };
+                }
+            }
+
+            // Find MediaFile (prefer MP4)
+            const mediaList = Array.from(doc.querySelectorAll('MediaFile'));
+            const selected = mediaList.find(m => (m.getAttribute('type') || '').includes('mp4')) || mediaList[0];
+            if (!selected || !selected.textContent.trim()) return null;
+
+            // Skip offset
+            let skipSec = instreamConfig.skipOffset || 5;
+            const linear = doc.querySelector('Linear');
+            if (linear && linear.getAttribute('skipoffset')) {
+                const raw = linear.getAttribute('skipoffset').trim();
+                if (raw.includes(':')) {
+                    const parts = raw.split(':').map(Number);
+                    skipSec = (parts[0] * 3600) + (parts[1] * 60) + (parts[2] || 0);
+                } else if (!raw.endsWith('%')) {
+                    const parsed = parseInt(raw, 10);
+                    if (!isNaN(parsed) && parsed > 0) skipSec = parsed;
+                }
+            }
+
+            const clickThroughEl = doc.querySelector('ClickThrough');
+            const clickThrough = clickThroughEl ? clickThroughEl.textContent.trim() : '';
+
+            return {
+                mediaUrl: selected.textContent.trim(),
+                clickThrough: clickThrough,
+                skipOffset: Math.max(1, skipSec),
+                impressions: impressions,
+                clickTrackings: clickTrackings
+            };
+        } catch (e) {
+            console.warn('VAST parse error:', e);
+            return null;
+        }
+    }
+
+    function pingTrackers(urls) {
+        if (!Array.isArray(urls)) return;
+        urls.forEach(u => {
+            if (!u) return;
+            try {
+                const img = new Image();
+                img.src = u;
+            } catch (e) {}
+        });
+    }
+
+    // Start playback when centered cover or play button is clicked
+    async function startPlayback(event) {
+        const cover = document.getElementById('player-cover');
+
+        // 1. Hide cover overlay cleanly
+        if (cover) {
+            cover.style.opacity = '0';
+            setTimeout(() => {
+                cover.style.display = 'none';
+                cover.style.pointerEvents = 'none';
+            }, 300);
+        }
+
+        // 2. Play In-Stream VAST Video Ad before main video if enabled
+        if (instreamConfig.enabled && instreamConfig.vastUrl && !adPlayed) {
+            adPlayed = true;
+            const adOverlay = document.getElementById('instream-ad-overlay');
+            const adVideo = document.getElementById('instream-ad-video');
+            const adLink = document.getElementById('instream-ad-link');
+            const adSkip = document.getElementById('instream-ad-skip');
+            const adCountdown = document.getElementById('instream-ad-countdown');
+            const adDuration = document.getElementById('instream-ad-duration');
+            const adProgress = document.getElementById('instream-ad-progress');
+
+            if (adOverlay && adVideo) {
+                adOverlay.classList.remove('hidden');
+                adOverlay.style.display = 'flex';
+
+                let timeoutHandle = setTimeout(() => {
+                    console.warn('In-stream ad load timed out, starting main video.');
+                    playMainVideo();
+                }, 4000);
+
+                const vastData = await parseVastTag(instreamConfig.vastUrl);
+                clearTimeout(timeoutHandle);
+
+                if (!vastData || !vastData.mediaUrl) {
+                    playMainVideo();
+                    return;
+                }
+
+                // Fire Impressions
+                pingTrackers(vastData.impressions);
+
+                // Setup Ad Video
+                adVideo.src = vastData.mediaUrl;
+                adVideo.currentTime = 0;
+
+                // Setup ClickThrough
+                const targetUrl = vastData.clickThrough || '#';
+                if (adLink) {
+                    adLink.href = targetUrl;
+                    adLink.onclick = function() {
+                        pingTrackers(vastData.clickTrackings);
+                    };
+                }
+                adVideo.onclick = function() {
+                    if (targetUrl && targetUrl !== '#') {
+                        pingTrackers(vastData.clickTrackings);
+                        window.open(targetUrl, '_blank');
+                    }
+                };
+
+                // Setup Skip button
+                const skipSeconds = vastData.skipOffset;
+                let isSkipped = false;
+
+                function triggerSkip() {
+                    if (isSkipped) return;
+                    isSkipped = true;
+                    playMainVideo();
+                }
+
+                if (adSkip) {
+                    adSkip.disabled = true;
+                    adSkip.onclick = triggerSkip;
+                }
+
+                adVideo.ontimeupdate = function() {
+                    const cur = adVideo.currentTime || 0;
+                    const dur = adVideo.duration || 0;
+
+                    if (adProgress && dur > 0) {
+                        adProgress.style.width = ((cur / dur) * 100) + '%';
+                    }
+                    if (adDuration && dur > 0) {
+                        const rem = Math.max(0, Math.ceil(dur - cur));
+                        adDuration.textContent = rem + 's';
+                    }
+
+                    if (cur < skipSeconds) {
+                        const remSkip = Math.ceil(skipSeconds - cur);
+                        if (adCountdown) adCountdown.textContent = remSkip;
+                    } else if (adSkip && adSkip.disabled) {
+                        adSkip.disabled = false;
+                        adSkip.innerHTML = '<span>Skip Ad</span> <i class="fa-solid fa-forward-step ml-1"></i>';
+                        adSkip.className = 'px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-2xl bg-gradient-to-r from-fuchsia-600 to-indigo-600 text-white hover:opacity-90 cursor-pointer animate-pulse';
+                    }
+                };
+
+                adVideo.onended = function() {
+                    playMainVideo();
+                };
+
+                adVideo.onerror = function() {
+                    console.warn('In-stream ad playback error, resuming main video.');
+                    playMainVideo();
+                };
+
+                const playPromise = adVideo.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(function(e) {
+                        console.warn('Ad autoplay blocked, falling back to main video:', e);
+                        playMainVideo();
+                    });
+                }
+                return;
+            }
+        }
+
+        // 3. Fallback: Directly start main video playback
+        playMainVideo();
     }
 
     // Theater Mode Toggle

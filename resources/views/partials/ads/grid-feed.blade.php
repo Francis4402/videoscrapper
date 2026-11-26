@@ -12,52 +12,53 @@
 
     @if($isEnabled)
         @if(!empty($code))
-            <div class="ad-grid-feed rounded-2xl bg-slate-900/80 border border-slate-800 overflow-hidden flex flex-col justify-center items-center p-3 relative group">
-                <span class="absolute top-2 right-2 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-black/60 text-slate-400 border border-white/10">Ad</span>
-                <div class="w-full flex justify-center items-center overflow-hidden">
-                    {!! $code !!}
+            <!-- Separated Full-Width In-Feed Banner Ad Break -->
+            <div class="col-span-full w-full my-4">
+                <div class="w-full max-w-full rounded-2xl bg-[#090c16]/90 border border-slate-800/80 hover:border-fuchsia-500/30 p-2.5 sm:p-4 shadow-2xl backdrop-blur-sm transition-all duration-300">
+                    <div class="w-full flex items-center justify-between text-[10px] text-slate-400 font-semibold mb-2 px-1">
+                        <span class="inline-flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-fuchsia-400 animate-pulse"></span>
+                            <span class="tracking-wider uppercase text-slate-300 font-bold text-[9px]">SPONSORED</span>
+                        </span>
+                        <span class="text-[9px] uppercase tracking-wider text-slate-500 font-medium">Advertisement</span>
+                    </div>
+                    <!-- Responsive Separated Ad Content -->
+                    <div class="ad-content w-full flex justify-center items-center overflow-hidden max-w-full">
+                        <div class="w-full max-w-full flex justify-center">
+                            {!! $code !!}
+                        </div>
+                    </div>
                 </div>
             </div>
         @elseif($showPlaceholder)
-            <!-- High-Converting In-Feed Sponsored Video Card -->
-            <div class="group relative rounded-2xl bg-gradient-to-br from-slate-900 via-purple-950/40 to-slate-900 border border-fuchsia-500/40 overflow-hidden card-glow transition duration-300 flex flex-col justify-between shadow-xl">
-                <!-- Thumbnail Area -->
-                <a href="{{ $bannerHref }}" target="{{ $bannerTarget }}" rel="nofollow noopener noreferrer" class="play-trigger block relative aspect-video w-full overflow-hidden bg-slate-950">
-                    <div class="absolute inset-0 bg-gradient-to-tr from-fuchsia-950/80 via-purple-900/40 to-indigo-950/80 flex flex-col items-center justify-center p-4 text-center">
-                        <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wider bg-fuchsia-600 text-white shadow">
-                            <i class="fa-solid fa-fire mr-1 text-amber-300"></i> Sponsored
-                        </span>
-                        <span class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-black/80 text-amber-400 border border-amber-400/40">
-                            18+ Free
-                        </span>
-
-                        <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-fuchsia-600 to-indigo-600 text-white flex items-center justify-center shadow-2xl shadow-fuchsia-600/50 mb-2 group-hover:scale-110 group-hover:rotate-6 transition-transform">
-                            <i class="fa-solid fa-gamepad text-xl"></i>
+            <!-- Separated Full-Width In-Feed Sponsored Banner -->
+            <div class="col-span-full w-full my-4">
+                <a href="{{ $bannerHref }}" target="{{ $bannerTarget }}" rel="nofollow noopener noreferrer" class="play-trigger group relative block w-full rounded-2xl overflow-hidden bg-gradient-to-r from-purple-950/90 via-slate-900 to-indigo-950/90 border border-fuchsia-500/40 hover:border-fuchsia-400 p-4 sm:p-5 shadow-2xl transition duration-300">
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-4 min-w-0">
+                            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-tr from-fuchsia-600 to-indigo-600 flex items-center justify-center text-white text-xl sm:text-2xl shadow-xl shadow-fuchsia-600/50 group-hover:scale-110 transition-transform shrink-0">
+                                <i class="fa-solid fa-gamepad"></i>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wider bg-fuchsia-600 text-white shadow">
+                                        <i class="fa-solid fa-fire mr-1 text-amber-300"></i> Sponsored
+                                    </span>
+                                    <span class="text-xs text-amber-400 font-bold"><i class="fa-solid fa-star"></i> 4.9/5 Partner</span>
+                                </div>
+                                <h4 class="text-sm sm:text-base font-black text-white group-hover:text-fuchsia-300 transition line-clamp-1">
+                                    3D Uncensored Hentai RPG &bull; Play Free in Browser
+                                </h4>
+                                <p class="text-xs text-slate-400 mt-0.5 hidden sm:block">
+                                    Interactive full-length anime RPG &bull; No downloads &bull; Instant HD streaming.
+                                </p>
+                            </div>
                         </div>
-                        <span class="text-xs font-black text-white uppercase tracking-wider">Play Free Hentai Game</span>
-                        <span class="text-[10px] text-slate-300">No Download &bull; Full HD</span>
+                        <span class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-fuchsia-600 to-indigo-600 text-white font-bold text-xs uppercase tracking-wider shadow-lg group-hover:opacity-90 transition shrink-0">
+                            Play Game Now <i class="fa-solid fa-arrow-up-right-from-square text-[10px] ml-1"></i>
+                        </span>
                     </div>
                 </a>
-
-                <!-- Card Body -->
-                <div class="p-4 flex-1 flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center justify-between mb-1.5">
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-fuchsia-400">Featured Partner</span>
-                            <span class="text-[10px] text-amber-400"><i class="fa-solid fa-star"></i> 4.9/5</span>
-                        </div>
-                        <div class="text-xs font-black text-white group-hover:text-fuchsia-300 transition line-clamp-1">
-                            3D Uncensored Hentai RPG
-                        </div>
-                        <p class="text-[11px] text-slate-400 mt-1 line-clamp-2 leading-relaxed">
-                            Play interactive full-length anime RPG in your browser with uncensored animations.
-                        </p>
-                    </div>
-
-                    <a href="{{ $bannerHref }}" target="{{ $bannerTarget }}" rel="nofollow noopener noreferrer" class="play-trigger mt-4 block w-full py-2.5 rounded-xl text-center text-xs font-extrabold uppercase tracking-wider bg-gradient-to-r from-fuchsia-600 to-indigo-600 group-hover:from-fuchsia-500 group-hover:to-indigo-500 text-white shadow-lg shadow-fuchsia-600/30 transition">
-                        Play Game Now <i class="fa-solid fa-arrow-up-right-from-square text-[10px] ml-1"></i>
-                    </a>
-                </div>
             </div>
         @endif
     @endif

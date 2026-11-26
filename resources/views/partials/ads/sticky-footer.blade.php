@@ -27,7 +27,7 @@
                     <span class="text-[8px] uppercase tracking-wider text-slate-500 font-semibold select-none">Advertisement</span>
                     
                     @if(!empty($code))
-                        <div class="ad-content flex justify-center items-center max-h-[90px] w-full overflow-hidden">
+                        <div class="ad-content flex justify-center items-center max-h-[260px] md:max-h-[100px] w-full overflow-hidden">
                             {!! $code !!}
                         </div>
                     @else

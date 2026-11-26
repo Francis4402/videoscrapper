@@ -37,8 +37,8 @@
         @foreach($videos as $video)
             @include('videos.partials.video-card', ['video' => $video])
 
-            {{-- In-Feed Native Ad Card: High-converting sponsored video placement --}}
-            @if($loop->iteration === 3 || ($loop->iteration > 3 && $loop->iteration % 6 === 0))
+            {{-- Separated Full-Width Banner Ad Break between rows of cards --}}
+            @if($loop->iteration === 8)
                 @include('partials.ads.grid-feed')
             @endif
         @endforeach

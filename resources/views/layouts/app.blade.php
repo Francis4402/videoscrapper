@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Delegate-CH" content="Sec-CH-UA https://s.magsrv.com; Sec-CH-UA-Mobile https://s.magsrv.com; Sec-CH-UA-Arch https://s.magsrv.com; Sec-CH-UA-Model https://s.magsrv.com; Sec-CH-UA-Platform https://s.magsrv.com; Sec-CH-UA-Platform-Version https://s.magsrv.com; Sec-CH-UA-Bitness https://s.magsrv.com; Sec-CH-UA-Full-Version-List https://s.magsrv.com; Sec-CH-UA-Full-Version https://s.magsrv.com;">
 
     <!-- Google Search Console Verification -->
     @if(env('GOOGLE_SITE_VERIFICATION'))
@@ -135,6 +136,26 @@
     <!-- ExoClick Site Verification -->
     <meta name="6a97888e-site-verification" content="d2f41d24add6224e9e65403281a4372f">
 
+    <!-- Responsive Ad Banner System (hdhentaizone-style) -->
+    <style>
+        .hz-ad-wrapper {
+            max-width: 100% !important;
+            width: 100% !important;
+            overflow: hidden !important;
+            box-sizing: border-box !important;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+        }
+        .hz-ad-desktop { display: flex !important; justify-content: center !important; width: 100%; }
+        .hz-ad-mobile { display: none !important; justify-content: center !important; width: 100%; }
+
+        @media (max-width: 900px) {
+            .hz-ad-desktop { display: none !important; }
+            .hz-ad-mobile { display: flex !important; justify-content: center !important; }
+        }
+    </style>
+
     <!-- Custom Ad Network Head Scripts (Verification / Header Tag) -->
     @if(config('ads.enabled', true) && config('ads.head_script'))
         {!! config('ads.head_script') !!}
@@ -169,6 +190,13 @@
             </div>
         </div>
     </header>
+
+    <!-- Header Leaderboard Banner Ad (728x90 Desktop / 300x250 Mobile) -->
+    @if(config('ads.enabled', true))
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full mt-3">
+        @include('partials.ads.slot', ['slot' => 'header'])
+    </div>
+    @endif
 
     <!-- Alerts / Flash Messages -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full mt-4">
@@ -264,8 +292,11 @@
 
                 const now = Date.now();
 
-                // Video play click: Highest earning placement, triggers pop ad while video plays
+                // Video play click: only trigger popunder if explicitly enabled in config
                 if (source === 'video_play') {
+                    @if(!config('ads.onclick.trigger_on_play', false))
+                        return;
+                    @else
                     const lastPlayTime = sessionStorage.getItem('hentaiflex_last_video_play_pop');
                     if (lastPlayTime && (now - parseInt(lastPlayTime, 10)) < 15000) {
                         return; // 15-second debounce on repeated play button clicks
@@ -281,6 +312,7 @@
                         console.warn('Popup suppressed:', e);
                     }
                     return;
+                    @endif
                 }
 
                 // General page click throttle

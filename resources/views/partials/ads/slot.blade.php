@@ -17,18 +17,26 @@
     @if($isEnabled)
         @if(!empty($code))
             <div id="ad-slot-{{ $slotName }}" class="ad-slot ad-slot-{{ $slotName }} w-full my-3 flex flex-col items-center justify-center {{ $customClass }}">
-                <div class="w-full flex items-center justify-between text-[9px] text-slate-500 uppercase tracking-widest font-semibold mb-1 px-1 max-w-full">
-                    <span><i class="fa-solid fa-rectangle-ad text-fuchsia-400 mr-1"></i> Advertisement</span>
-                    @if($slotName === 'header')
-                        <button type="button" onclick="this.closest('.ad-slot').remove()" class="text-slate-500 hover:text-slate-300 transition text-[10px]" title="Dismiss ad">
-                            <i class="fa-solid fa-xmark"></i>
-                        </button>
-                    @endif
-                </div>
-                <!-- Responsive iframe / script wrapper to prevent mobile overflow -->
-                <div class="ad-content w-full flex justify-center items-center overflow-x-auto sm:overflow-hidden max-w-full">
-                    <div class="w-full max-w-full flex justify-center">
-                        {!! $code !!}
+                <div class="w-full max-w-full rounded-2xl bg-[#090c16]/90 border border-slate-800/80 hover:border-fuchsia-500/30 p-2 sm:p-3 shadow-xl backdrop-blur-sm transition-all duration-300">
+                    <div class="w-full flex items-center justify-between text-[10px] text-slate-400 font-semibold mb-2 px-1">
+                        <span class="inline-flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-fuchsia-400 animate-pulse"></span>
+                            <span class="tracking-wider uppercase text-slate-300 font-bold text-[9px]">SPONSORED</span>
+                        </span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[9px] uppercase tracking-wider text-slate-500 font-medium">Advertisement</span>
+                            @if($slotName === 'header')
+                                <button type="button" onclick="this.closest('.ad-slot').remove()" class="text-slate-500 hover:text-slate-300 transition text-[10px] ml-1 p-0.5" title="Dismiss ad">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            @endif
+                        </div>
+                    </div>
+                    <!-- Responsive container to prevent overflow -->
+                    <div class="ad-content w-full flex justify-center items-center overflow-hidden max-w-full">
+                        <div class="w-full max-w-full flex justify-center">
+                            {!! $code !!}
+                        </div>
                     </div>
                 </div>
             </div>
