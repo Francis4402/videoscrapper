@@ -33,16 +33,27 @@
 
 <!-- Video Cards Grid -->
 @if($videos->count() > 0)
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        @foreach($videos as $video)
-            @include('videos.partials.video-card', ['video' => $video])
+    @php
+        $firstBatch = $videos->take(8);
+        $secondBatch = $videos->slice(8);
+    @endphp
 
-            {{-- Separated Full-Width Banner Ad Break between rows of cards --}}
-            @if($loop->iteration === 8)
-                @include('partials.ads.grid-feed')
-            @endif
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 items-start">
+        @foreach($firstBatch as $video)
+            @include('videos.partials.video-card', ['video' => $video])
         @endforeach
     </div>
+
+    {{-- Separated Full-Width Banner Ad Break (Completely outside card grid) --}}
+    @include('partials.ads.grid-feed')
+
+    @if($secondBatch->count() > 0)
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 items-start">
+            @foreach($secondBatch as $video)
+                @include('videos.partials.video-card', ['video' => $video])
+            @endforeach
+        </div>
+    @endif
 
     <!-- Pagination -->
     <div class="mt-10">

@@ -23,7 +23,7 @@
 
 @section('title', $seoTitle)
 @section('meta_description', $seoDesc)
-@section('meta_keywords', 'watch hentai, free hentai, hentai online, hentai streaming, best hentai sites, watch hentai online free, uncensored hentai, gangbang hentai, cartoon hentai, 3d hentai, full hentai episodes, english sub hentai, hentai tube, hd anime, hentai videos, hentaiflex')
+@section('meta_keywords', 'watch hentai, free hentai, hentai online, hentai streaming, best hentai sites, watch hentai online free, uncensored hentai, gangbang hentai, cartoon hentai, 3d hentai, full hentai episodes, english sub hentai, hentai tube, hd anime, hentai videos, hentaiflex, hanime tv, hentai haven, rule34 video, 1080p hentai, sfm hentai, milf hentai')
 @section('canonical_url', $seoCanonical)
 
 @push('schema')

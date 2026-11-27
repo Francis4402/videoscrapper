@@ -269,17 +269,50 @@ class ScrapedVideo extends Model implements Sitemapable
             $primaryCategory = 'Hentai';
         }
 
-        // Deterministic template index based on UUID/ID
-        $hash = crc32((string) ($this->id ?? $cleanTitle));
+        // Deterministic template index based on UUID/ID and slug
+        $seed = (string) ($this->id ?? '') . (string) ($this->slug ?? '') . $cleanTitle;
+        $hash = crc32($seed);
+
         $patterns = [
-            "Watch {$cleanTitle} Full Episode (HD {$primaryCategory}) | HentaiFlex",
-            "{$cleanTitle} - Free {$primaryCategory} Hentai Streaming in 1080p | HentaiFlex",
+            // High-CTR Uncensored & Quality Intents
+            "Watch {$cleanTitle} [Uncensored 1080p HD] | HentaiFlex",
+            "{$cleanTitle} - Full Uncensored {$primaryCategory} Video | HentaiFlex",
+            "Stream {$cleanTitle} in 1080p 60FPS Uncensored | HentaiFlex",
+            "{$cleanTitle} (Uncensored HD Stream) - Free {$primaryCategory} | HentaiFlex",
+            "Watch {$cleanTitle} [Ultra HD {$primaryCategory}] Streaming | HentaiFlex",
+            "{$cleanTitle} - Remastered Uncensored HD Anime | HentaiFlex",
+
+            // High-CTR Full Episode & Subtitled Intents
+            "Watch {$cleanTitle} Full Episode Online (English Sub) | HentaiFlex",
+            "{$cleanTitle} - Free Full-Length {$primaryCategory} Anime Stream | HentaiFlex",
+            "Stream {$cleanTitle} Online Free - HD Anime Video | HentaiFlex",
+            "{$cleanTitle} - Watch Full Episode (No Buffering) | HentaiFlex",
+            "Watch {$cleanTitle} Online (English Subtitles HD) | HentaiFlex",
+            "{$cleanTitle} - Complete Full-Length {$primaryCategory} Episode | HentaiFlex",
+
+            // High-CTR 3D, SFM & Studio Animation Intents
+            "Stream {$cleanTitle} [1080p HD] - Free {$primaryCategory} | HentaiFlex",
+            "{$cleanTitle} - Premium {$primaryCategory} Animation in 1080p | HentaiFlex",
+            "Watch {$cleanTitle} Full Video (High Bitrate HD) | HentaiFlex",
+            "Stream {$cleanTitle} HD - Full Uncensored Release | HentaiFlex",
+            "{$cleanTitle} - Watch High Bitrate Anime Stream | HentaiFlex",
+            "Watch {$cleanTitle} Free HD - {$primaryCategory} Video | HentaiFlex",
+
+            // High-CTR Tube & Trending Search Intents
+            "{$cleanTitle} - Best Hentai Streaming Free Online | HentaiFlex",
+            "{$cleanTitle} - Fast Mobile {$primaryCategory} Video Stream | HentaiFlex",
+            "Stream {$cleanTitle} Full Version Free | HentaiFlex",
+            "Watch {$cleanTitle} Uncensored Online - HD Player | HentaiFlex",
+            "{$cleanTitle} - Free {$primaryCategory} Streaming in 1080p | HentaiFlex",
             "Stream {$cleanTitle} Online ({$primaryCategory} Anime HD) | HentaiFlex",
             "{$cleanTitle} - Watch Full Uncensored Hentai Online | HentaiFlex",
             "Watch {$cleanTitle} [{$primaryCategory} HD] Streaming Online | HentaiFlex",
             "{$cleanTitle} - Free Full-Length {$primaryCategory} Anime | HentaiFlex",
-            "Stream {$cleanTitle} Free HD - {$primaryCategory} Video | HentaiFlex",
             "{$cleanTitle} - Watch Full HD Hentai Online | HentaiFlex",
+            "Watch {$cleanTitle} Direct Stream - Free {$primaryCategory} HD | HentaiFlex",
+            "{$cleanTitle} - Instant 1080p HD Streaming | HentaiFlex",
+            "Stream {$cleanTitle} Free in High Definition | HentaiFlex",
+            "{$cleanTitle} - Top {$primaryCategory} Anime Episode Online | HentaiFlex",
         ];
 
         return $patterns[abs($hash) % count($patterns)];
@@ -287,42 +320,102 @@ class ScrapedVideo extends Model implements Sitemapable
 
     /**
      * Generate an authentic, completely unique narrative description for Google.
-     * Synthesizes title, categories, duration, and content highlights so no two videos share duplicate text.
+     * Modularly synthesizes dynamic hooks, category-specific storylines, technical specs,
+     * and high-value search terms so no two videos share duplicate text.
      */
     public function getSeoDescriptionAttribute(): string
     {
         $cleanTitle = $this->clean_title;
         $categoryNames = array_map(fn($c) => strtolower($c['name']), array_slice($this->categories, 0, 3));
         $categoryStr = !empty($categoryNames) ? implode(', ', $categoryNames) : 'uncensored anime and hentai';
-        $durationStr = $this->duration ? " featuring a runtime of {$this->duration}" : '';
+        $primaryCategory = $this->categories[0]['name'] ?? 'Anime';
+        $durationStr = $this->duration ? " featuring a full runtime of {$this->duration}" : '';
 
-        // Deterministic template variation
-        $hash = crc32((string) ($this->id ?? $cleanTitle));
-        $templates = [
-            "Watch {$cleanTitle} full episode in 1080p HD on HentaiFlex{$durationStr}. This {$categoryStr} anime release features intense uncensored animation, premium visuals, and captivating storylines. Stream now with instant playback, zero buffering, and mobile compatibility.",
-            "Stream {$cleanTitle} online for free in high definition on HentaiFlex. Showcasing top-tier {$categoryStr} scenes{$durationStr}, this full-length animation delivers crystal-clear 1080p visuals and seamless direct MP4 playback on all devices with no sign-up needed.",
-            "Experience {$cleanTitle} in ultra-sharp HD streaming on HentaiFlex{$durationStr}. Discover thrilling {$categoryStr} moments with full uncensored action and dynamic sound design. Enjoy unlimited free streaming without buffering or account registration.",
-            "Watch full-length {$cleanTitle} online on HentaiFlex, featuring premium {$categoryStr} animation{$durationStr}. Immerse yourself in high-resolution direct video playback with smooth seeking, adaptive streaming, and 100% free access.",
-            "Dive into {$cleanTitle} on HentaiFlex{$durationStr}. This highly requested {$categoryStr} episode brings fluid animation, vibrant artwork, and complete uncensored scenes straight to your mobile or desktop browser with zero interruptions.",
-            "Stream the complete {$cleanTitle} anime video on HentaiFlex{$durationStr}. Highlighting captivating {$categoryStr} themes, this full HD stream is optimized for fast loading, instant seeking, and superior playback quality on any screen.",
+        // Deterministic variation seeds
+        $seed = (string) ($this->id ?? '') . (string) ($this->slug ?? '') . $cleanTitle;
+        $hash = abs(crc32($seed));
+
+        // 1. Dynamic Narrative Opening Hooks (12 variations)
+        $hooks = [
+            "Watch {$cleanTitle} full video streaming online in full 1080p high definition on HentaiFlex{$durationStr}.",
+            "Stream the complete {$cleanTitle} episode with crystal-clear audio and uncensored visuals on HentaiFlex{$durationStr}.",
+            "Experience {$cleanTitle} online in ultra-sharp 1080p HD with instant playback and zero buffering on HentaiFlex{$durationStr}.",
+            "Enjoy unlimited free streaming of {$cleanTitle} with zero lag, instant seeking, and high bitrate video on HentaiFlex{$durationStr}.",
+            "Dive into {$cleanTitle}, one of the most requested {$primaryCategory} anime streaming releases on HentaiFlex{$durationStr}.",
+            "Watch full-length uncensored {$cleanTitle} online in 1080p 60FPS on HentaiFlex{$durationStr}.",
+            "Discover {$cleanTitle} streaming free in high resolution with complete English subtitles on HentaiFlex{$durationStr}.",
+            "Stream {$cleanTitle} direct to your mobile, tablet, or desktop browser with zero buffering on HentaiFlex{$durationStr}.",
+            "Immerse yourself in {$cleanTitle}, featuring premium {$categoryStr} scenes and captivating animation on HentaiFlex{$durationStr}.",
+            "Get instant access to {$cleanTitle} full-length HD stream on HentaiFlex without registration or payment{$durationStr}.",
+            "Watch {$cleanTitle} free online, optimized for smooth playback, adaptive streaming, and rich colors on HentaiFlex{$durationStr}.",
+            "Stream the complete uncensored release of {$cleanTitle} with enhanced visuals and remastered audio on HentaiFlex{$durationStr}.",
         ];
+        $selectedHook = $hooks[$hash % count($hooks)];
 
-        $synthesized = $templates[abs($hash) % count($templates)];
+        // 2. Category-Specific Storyline & Content Synopses
+        $catSlugs = array_map(fn($c) => $c['slug'] ?? '', $this->categories);
+        $categorySynopses = [];
 
-        // If the scraped video already had a descriptive blurb, sanitize and merge it seamlessly
+        if (in_array('3d', $catSlugs)) {
+            $categorySynopses[] = "Rendered with high-fidelity 3D CGI and SFM graphics, this animation features fluid character motion, realistic physics, and dynamic camera angles crafted for maximum visual impact.";
+        }
+        if (in_array('uncensored', $catSlugs)) {
+            $categorySynopses[] = "Presented in full decensored and mosaic-free video format, every intense moment is preserved in pristine clarity without obstruction or pixelation.";
+        }
+        if (in_array('fantasy', $catSlugs)) {
+            $categorySynopses[] = "Set within an alluring fantasy realm of mystical elves, dark succubi, and enchanted adventurers, this episode weaves magical encounters with deep erotic tension.";
+        }
+        if (in_array('gangbang', $catSlugs)) {
+            $categorySynopses[] = "Featuring dynamic multi-character chemistry and unrelenting group dynamics, this storyline brings intense harem scenarios and passionate encounters to life.";
+        }
+        if (in_array('school', $catSlugs) || in_array('teacher', $catSlugs)) {
+            $categorySynopses[] = "Exploring thrilling student-teacher secrets and academy drama, this forbidden romance builds up through secret rendezvous and seductive classroom moments.";
+        }
+        if (in_array('mature', $catSlugs)) {
+            $categorySynopses[] = "Delivering a captivating mature storyline with alluring milf and adult themes, passionate drama unfolds with irresistible chemistry and emotional depth.";
+        }
+        if (in_array('cartoon', $catSlugs)) {
+            $categorySynopses[] = "Crafted with expressive hand-drawn 2D animation and stylized character designs, this cartoon hentai feature blends creative parody with captivating adult art direction.";
+        }
+        if (in_array('creampie', $catSlugs) || in_array('oral', $catSlugs)) {
+            $categorySynopses[] = "Packed with intense climax scenes, deep oral moments, and passionate creampie sequences, this release delivers high-energy pacing and raw excitement.";
+        }
+
+        if (empty($categorySynopses)) {
+            $categorySynopses[] = "Showcasing compelling character interactions, top-tier anime artwork, and thrilling encounters, this release stands out as a must-watch {$primaryCategory} video.";
+        }
+        $selectedCategoryPlot = $categorySynopses[($hash >> 3) % count($categorySynopses)];
+
+        // 3. Technical & Streaming Spec Highlights (8 variations)
+        $specs = [
+            "Optimized for fast mobile and desktop streaming, this video supports adaptive playback, instant seeking, full-screen theater mode, and direct progressive MP4 delivery.",
+            "Stream seamlessly in full 1080p with lossless stereo audio and clear English subtitles. Compatible across iOS, Android, tablet, and desktop devices.",
+            "Enjoy ultra-fast cloud CDN delivery with zero loading delay. Features intuitive HTML5 playback controls, volume boost, and theater viewing.",
+            "Delivered via high-speed streaming infrastructure for smooth, uninterrupted playback. Audio is mastered in clear Japanese voice acting with English subtitle support.",
+            "Engineered for crisp resolution and smooth frame rates. Switch easily to full-screen theater mode and enjoy bufferless streaming on any connection.",
+            "Experience vibrant color reproduction and deep contrast on OLED and Retina displays with our optimized HTML5 player and adaptive video bitrate.",
+            "Designed for instant viewing without sign-ups or software downloads. Enjoy complete private browsing with SSL encryption and fast seeking.",
+            "Featuring high-definition video encoding and responsive mobile scaling, allowing you to enjoy your favorite anime episodes anywhere, anytime.",
+        ];
+        $selectedSpec = $specs[($hash >> 6) % count($specs)];
+
+        // 4. Trending Search Keyword Integration Callout
+        $seoFooter = "HentaiFlex is your premier destination to stream free uncensored hentai, full anime episodes, and 3D SFM animations with fast, secure playback.";
+
+        // 5. Scraped Original Description Integration
+        $originalContext = '';
         if (!empty($this->description) && strlen(trim($this->description)) > 25) {
             $cleanedOriginal = strip_tags($this->description);
-            // Remove source watermarks from scraped text
             $cleanedOriginal = preg_replace('/(https?:\/\/)?(www\.)?[a-zA-Z0-9-]+\.(com|net|org|tv|to|io|me|cc)\b/i', '', $cleanedOriginal);
-            $cleanedOriginal = preg_replace('/\b(hentaicity|watchhentai|spankbang|pornhub|xvideos|xnxx)\b/i', '', $cleanedOriginal);
+            $cleanedOriginal = preg_replace('/\b(hentaicity|watchhentai|spankbang|pornhub|xvideos|xnxx|hanime)\b/i', '', $cleanedOriginal);
             $cleanedOriginal = trim(preg_replace('/\s+/', ' ', $cleanedOriginal));
 
             if (strlen($cleanedOriginal) > 30) {
-                return $cleanedOriginal . ' ' . $synthesized;
+                $originalContext = $cleanedOriginal . ' ';
             }
         }
 
-        return $synthesized;
+        return trim("{$originalContext}{$selectedHook} {$selectedCategoryPlot} {$selectedSpec} {$seoFooter}");
     }
 
     /**
@@ -330,7 +423,90 @@ class ScrapedVideo extends Model implements Sitemapable
      */
     public function getSeoSummaryAttribute(): string
     {
-        return Str::limit(strip_tags($this->seo_description), 158);
+        $cleanTitle = $this->clean_title;
+        $primaryCategory = $this->categories[0]['name'] ?? 'Hentai';
+        if ($primaryCategory === 'General') {
+            $primaryCategory = 'Hentai';
+        }
+
+        $seed = (string) ($this->id ?? '') . $cleanTitle;
+        $hash = abs(crc32($seed));
+
+        $summaries = [
+            "Watch {$cleanTitle} full episode in 1080p HD on HentaiFlex. Stream free uncensored {$primaryCategory} anime with instant playback and zero buffering.",
+            "Stream {$cleanTitle} online free in high definition. Discover top uncensored {$primaryCategory} scenes with fast direct playback on HentaiFlex.",
+            "Watch full-length {$cleanTitle} on HentaiFlex. Enjoy premium {$primaryCategory} animation in crystal-clear 1080p with English subs and zero lag.",
+            "Experience {$cleanTitle} in ultra-sharp 1080p HD streaming on HentaiFlex. 100% free uncensored {$primaryCategory} anime with instant mobile playback.",
+            "Stream {$cleanTitle} free online on HentaiFlex. Featuring full-length {$primaryCategory} animation in 1080p with fast bufferless playback.",
+            "Watch {$cleanTitle} online in 1080p 60FPS. Free uncensored {$primaryCategory} streaming with crystal-clear audio and English subs on HentaiFlex.",
+        ];
+
+        return Str::limit($summaries[$hash % count($summaries)], 158);
+    }
+
+    /**
+     * Generate high-volume, trending Google search keywords tailored to this video.
+     * Retains 100% of the original keyword inventory while appending high-ranking search terms.
+     */
+    public function getSeoKeywordsAttribute(): string
+    {
+        $cleanTitle = strtolower($this->clean_title);
+        $primaryCategory = strtolower($this->categories[0]['name'] ?? 'hentai');
+
+        $videoSpecific = [
+            $cleanTitle,
+            "watch {$cleanTitle}",
+            "stream {$cleanTitle}",
+            "{$cleanTitle} uncensored",
+            "{$cleanTitle} full episode",
+            "{$cleanTitle} 1080p",
+            "{$cleanTitle} english sub",
+            "{$cleanTitle} online free",
+        ];
+
+        // 100% of original core keywords preserved + latest high-volume search queries
+        $allKeywords = array_merge($videoSpecific, [
+            // Original keywords (completely preserved)
+            'watch hentai',
+            'watch hentai online',
+            'watch hentai online free',
+            'free hentai',
+            'hentai online',
+            'hentai online free',
+            'hentai streaming',
+            'best hentai sites',
+            'uncensored hentai',
+            'gangbang hentai',
+            'cartoon hentai',
+            '3d hentai',
+            'full hentai episode',
+            'full hentai episodes',
+            'english sub hentai',
+            'english dub hentai',
+            'hentai tube',
+            'hd anime',
+            'hentai videos',
+            'hentai video',
+            'milf hentai',
+            'tentacle hentai',
+            'harem anime',
+            'anime',
+            'hentaiflex',
+            "{$primaryCategory} hentai",
+
+            // New trending high-volume Google search queries
+            'hanime tv',
+            'hentai haven',
+            'rule34 video',
+            'sfm hentai',
+            '4k hentai',
+            '1080p hentai tube',
+            'uncensored anime stream',
+            'no buffering hentai',
+            'anime porn streaming',
+        ]);
+
+        return implode(', ', array_unique($allKeywords));
     }
 
     /**
@@ -383,7 +559,7 @@ class ScrapedVideo extends Model implements Sitemapable
                 'hentai streaming', 'best hentai sites', 'hentai video', 'hentai videos', 'hd hentai',
                 'gangbang hentai', 'cartoon hentai', '3d hentai', 'uncensored hentai', 'full hentai episodes',
                 'english sub hentai', 'english dub hentai', 'hentai tube', 'milf hentai', 'tentacle hentai',
-                'harem anime', 'anime', 'hd anime', 'hentaiflex'
+                'harem anime', 'anime', 'hd anime', 'rule34 video', 'hanime', 'hentaiflex'
             ];
 
             // Google Video SEO: Use dedicated embed player URL for player_loc.

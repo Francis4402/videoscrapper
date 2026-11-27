@@ -353,7 +353,7 @@ class VideoScraperService
     {
         $clips = [];
 
-        // watchhentai.net episode listing detection
+        // 1. watchhentai.net episode listing detection
         if (str_contains($domain, 'watchhentai.net')) {
             $crawler->filter('.poster, .item, article')->each(function (Crawler $node) use ($url, $domain, &$clips) {
                 $linkNode = $node->filter('a.ep-bd-link, a[href*="/videos/"]');
@@ -399,6 +399,92 @@ class VideoScraperService
                         'thumbnail_url' => $img ?: null,
                         'video_url' => null,
                         'embed_url' => $href,
+                        'video_type' => 'embed',
+                        'duration' => null,
+                    ];
+                }
+            });
+        }
+
+        // 2. hanime.tv listing detection
+        if (str_contains($domain, 'hanime.tv')) {
+            $crawler->filter('a[href*="/videos/hentai/"]')->each(function (Crawler $node) use ($url, $domain, &$clips) {
+                $href = $node->attr('href');
+                if (!$href) return;
+                $absoluteHref = $this->resolveUrl($href, 'https://hanime.tv');
+
+                if (isset($clips[$absoluteHref])) return;
+
+                $title = '';
+                $h3 = $node->filter('h3');
+                if ($h3->count()) {
+                    $title = trim($h3->text());
+                }
+                if (!$title && $node->attr('title')) {
+                    $rawTitle = trim($node->attr('title'));
+                    $title = preg_replace('/^Watch\s+/i', '', $rawTitle);
+                    $title = preg_replace('/\s+hentai\s+stream\s+online.*$/i', '', $title);
+                }
+
+                $img = '';
+                $imgNode = $node->filter('img');
+                if ($imgNode->count()) {
+                    $img = $imgNode->first()->attr('src') ?: ($imgNode->first()->attr('data-src') ?: '');
+                }
+
+                if ($title && $absoluteHref) {
+                    $clips[$absoluteHref] = [
+                        'source_url' => $url,
+                        'source_domain' => $domain,
+                        'title' => $title,
+                        'description' => null,
+                        'thumbnail_url' => $img ?: null,
+                        'video_url' => null,
+                        'embed_url' => $absoluteHref,
+                        'video_type' => 'embed',
+                        'duration' => null,
+                    ];
+                }
+            });
+        }
+
+        // 3. Generic video catalog / tube listing fallback (e.g. xnxx, xvideos, rule34, uncensoredhentai, etc.)
+        if (empty($clips)) {
+            $crawler->filter('.thumb-block, .mozaique .thumb, .video-block, .thumb, article, .item, .video-card, .catalog-card')->each(function (Crawler $node) use ($url, $domain, &$clips) {
+                $linkNode = $node->filter('a[href*="/video"], a[href*="/watch"], a[href*="/view"]');
+                if (!$linkNode->count()) return;
+
+                $href = $linkNode->first()->attr('href');
+                if (!$href) return;
+                $absoluteHref = $this->resolveUrl($href, $url);
+                if (isset($clips[$absoluteHref])) return;
+
+                $title = trim($linkNode->first()->attr('title') ?: ($linkNode->first()->attr('aria-label') ?: ''));
+                if (!$title) {
+                    $titleNode = $node->filter('.title, h2, h3, h4, p.title, strong');
+                    if ($titleNode->count()) {
+                        $title = trim($titleNode->first()->text());
+                    }
+                }
+
+                $img = '';
+                $imgNode = $node->filter('img');
+                if ($imgNode->count()) {
+                    $rawImg = $imgNode->first()->attr('data-src') ?: ($imgNode->first()->attr('data-original') ?: ($imgNode->first()->attr('src') ?: ''));
+                    if ($rawImg) {
+                        $img = $this->resolveUrl($rawImg, $url);
+                    }
+                }
+
+                if ($title && $absoluteHref) {
+                    $clips[$absoluteHref] = [
+                        'source_url' => $url,
+                        'source_domain' => $domain,
+                        'title' => $title,
+                        'description' => null,
+                        'thumbnail_url' => $img ?: null,
+                        'video_url' => null,
+                        'embed_url' => $absoluteHref,
                         'video_type' => 'embed',
                         'duration' => null,
                     ];

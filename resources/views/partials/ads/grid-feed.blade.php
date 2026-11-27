@@ -12,8 +12,8 @@
 
     @if($isEnabled)
         @if(!empty($code))
-            <!-- Separated Full-Width In-Feed Banner Ad Break -->
-            <div class="col-span-full w-full my-4">
+            <!-- Separated Full-Width Banner Ad Break (Isolated from all cards) -->
+            <div class="w-full my-6 clear-both">
                 <div class="w-full max-w-full rounded-2xl bg-[#090c16]/90 border border-slate-800/80 hover:border-fuchsia-500/30 p-2.5 sm:p-4 shadow-2xl backdrop-blur-sm transition-all duration-300">
                     <div class="w-full flex items-center justify-between text-[10px] text-slate-400 font-semibold mb-2 px-1">
                         <span class="inline-flex items-center gap-1.5">
@@ -31,8 +31,8 @@
                 </div>
             </div>
         @elseif($showPlaceholder)
-            <!-- Separated Full-Width In-Feed Sponsored Banner -->
-            <div class="col-span-full w-full my-4">
+            <!-- Separated Full-Width Sponsored Banner Break -->
+            <div class="w-full my-6 clear-both">
                 <a href="{{ $bannerHref }}" target="{{ $bannerTarget }}" rel="nofollow noopener noreferrer" class="play-trigger group relative block w-full rounded-2xl overflow-hidden bg-gradient-to-r from-purple-950/90 via-slate-900 to-indigo-950/90 border border-fuchsia-500/40 hover:border-fuchsia-400 p-4 sm:p-5 shadow-2xl transition duration-300">
                     <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
                         <div class="flex items-center gap-4 min-w-0">

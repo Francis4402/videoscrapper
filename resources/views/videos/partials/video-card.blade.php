@@ -1,5 +1,5 @@
 <!-- Video Card Component -->
-<div class="group relative rounded-2xl bg-slate-900/80 border border-slate-800 overflow-hidden card-glow transition duration-300 flex flex-col">
+<div class="group relative rounded-2xl bg-slate-900/80 border border-slate-800 overflow-hidden card-glow transition duration-300 flex flex-col h-full">
     <!-- Thumbnail container with Centered Play Button on hover -->
     <a href="{{ route('videos.watch', $video->slug ?: $video->id) }}" aria-label="{{ $video->title }}" class="relative aspect-video w-full overflow-hidden bg-slate-950 block">
         @if($video->thumbnail_url)
@@ -51,7 +51,7 @@
             </div>
 
             <!-- Title -->
-            <h3 class="font-semibold text-slate-100 text-sm line-clamp-2 hover:text-fuchsia-300 transition">
+            <h3 class="font-semibold text-slate-100 text-sm line-clamp-2 min-h-[2.5rem] hover:text-fuchsia-300 transition">
                 <a href="{{ route('videos.watch', $video->slug ?: $video->id) }}">
                     {{ $video->title }}
                 </a>

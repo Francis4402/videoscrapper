@@ -14,7 +14,7 @@
 
     <title>@yield('title', 'Watch Free Hentai Online - HD Hentai Streaming, Gangbang & Cartoon Anime | HentaiFlex')</title>
     <meta name="description" content="@yield('meta_description', 'Watch free HD hentai online with zero buffering. Stream thousands of uncensored full-length hentai episodes, gangbang hentai, cartoon hentai, 3D SFM animations, and English sub anime on HentaiFlex.')">
-    <meta name="keywords" content="@yield('meta_keywords', 'watch hentai, free hentai, hentai online, hentai streaming, best hentai sites, watch hentai online free, uncensored hentai, gangbang hentai, cartoon hentai, 3d hentai, full hentai episodes, english sub hentai, hentai tube, hd anime, hentai videos, hentaiflex')">
+    <meta name="keywords" content="@yield('meta_keywords', 'watch hentai, free hentai, hentai online, hentai streaming, best hentai sites, watch hentai online free, uncensored hentai, 3d hentai, gangbang hentai, cartoon hentai, full hentai episodes, english sub hentai, hanime tv, hentai haven, rule34 video, 1080p hentai, sfm hentai, milf hentai, hentai tube, hd anime, hentai videos, hentaiflex')">
     <link rel="canonical" href="@yield('canonical_url', url()->current())">
     <link rel="alternate" type="application/rss+xml" title="HentaiFlex Video Feed" href="{{ route('feed') }}">
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
